@@ -47,7 +47,7 @@ public class MarketController {
 
     @PreAuthorize("hasRole('USER')")
     @PostMapping("/sell")
-    public ResponseEntity<?> sellItem(@Valid @RequestBody ItemSellRequest itemSellRequest,
+    public ResponseEntity<Object> sellItem(@Valid @RequestBody ItemSellRequest itemSellRequest,
             HttpServletRequest httpServletRequest) {
         String login = authService.getLoginFromToken(httpServletRequest);
         User user = userService.getUserByLogin(login);
@@ -60,7 +60,7 @@ public class MarketController {
     }
 
     @GetMapping()
-    public ResponseEntity<?> getAllSlots(@RequestParam String gameName,
+    public ResponseEntity<Object> getAllSlots(@RequestParam String gameName,
             @RequestParam String itemName) {
         return ResponseEntity.ok(marketService.getEntriesByGameNameAndItemName(itemName, gameName));
 
@@ -68,7 +68,7 @@ public class MarketController {
 
     @PreAuthorize("hasRole('USER')")
     @PostMapping("/buy")
-    public ResponseEntity<?> buyItem(@RequestBody ItemBuyRequest itemBuyRequest,
+    public ResponseEntity<Object> buyItem(@RequestBody ItemBuyRequest itemBuyRequest,
             HttpServletRequest httpServletRequest) {
         String login = authService.getLoginFromToken(httpServletRequest);
         User user = userService.getUserByLogin(login);

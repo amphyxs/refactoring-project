@@ -6,6 +6,7 @@ services:
       POSTGRES_DB: mydatabase
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
+    profiles: [main, storage]
     ports:
       - "5433:5432"
     volumes:
@@ -17,7 +18,7 @@ services:
     build: .
     profiles: [main]
     depends_on:
-      - postgres
+      - db
     network_mode: host
     env_file: ".env"
 

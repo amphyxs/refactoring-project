@@ -23,7 +23,7 @@ public class LibraryController {
     }
 
     @GetMapping()
-    public ResponseEntity<?> getGamesByName(@RequestParam String gameName,
+    public ResponseEntity<Object> getGamesByName(@RequestParam String gameName,
             HttpServletRequest httpServletRequest) {
         String login = authService.getLoginFromToken(httpServletRequest);
 
@@ -33,7 +33,7 @@ public class LibraryController {
     @PreAuthorize("hasRole('USER')")
 
     @PatchMapping("{gameName}")
-    public ResponseEntity<?> enterGame(@PathVariable String gameName,
+    public ResponseEntity<Object> enterGame(@PathVariable String gameName,
             HttpServletRequest httpServletRequest) {
         String login = authService.getLoginFromToken(httpServletRequest);
         libraryService.enterTheGame(login, gameName);
@@ -41,17 +41,17 @@ public class LibraryController {
     }
 
     @GetMapping("count/{login}")
-    public ResponseEntity<?> getGamesCount(@PathVariable String login) {
+    public ResponseEntity<Object> getGamesCount(@PathVariable String login) {
         return ResponseEntity.ok(libraryService.getCountOfUserGames(login));
     }
 
     @GetMapping("last-games/{login}")
-    public ResponseEntity<?> getLastGames(@PathVariable String login) {
+    public ResponseEntity<Object> getLastGames(@PathVariable String login) {
         return ResponseEntity.ok(libraryService.getUserLastGames(login));
     }
 
     @PostMapping("/refund")
-    public ResponseEntity<?> refundGame(@RequestParam String gameName, HttpServletRequest httpServletRequest) {
+    public ResponseEntity<Object> refundGame(@RequestParam String gameName, HttpServletRequest httpServletRequest) {
         String login = authService.getLoginFromToken(httpServletRequest);
 
         libraryService.refundGame(login, gameName);

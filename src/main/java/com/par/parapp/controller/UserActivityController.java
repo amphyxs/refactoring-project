@@ -35,7 +35,7 @@ public class UserActivityController {
 
     @PreAuthorize("hasRole('USER')")
     @PostMapping()
-    public ResponseEntity<?> submitActivity(@Valid @RequestBody ActivityRequest activityRequest,
+    public ResponseEntity<Object> submitActivity(@Valid @RequestBody ActivityRequest activityRequest,
             HttpServletRequest httpServletRequest) {
         String login = authService.getLoginFromToken(httpServletRequest);
         User user = userService.getUserByLogin(login);
@@ -44,7 +44,7 @@ public class UserActivityController {
     }
 
     @GetMapping()
-    public ResponseEntity<?> getAllActivities(@RequestParam(defaultValue = "0") int page,
+    public ResponseEntity<Object> getAllActivities(@RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam String login) {
 

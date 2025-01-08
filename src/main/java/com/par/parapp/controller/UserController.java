@@ -29,13 +29,13 @@ public class UserController {
 
     @PreAuthorize("hasAnyRole('USER','DEV')")
     @GetMapping()
-    public ResponseEntity<?> getUserLogin(HttpServletRequest httpServletRequest) {
+    public ResponseEntity<Object> getUserLogin(HttpServletRequest httpServletRequest) {
         String login = authService.getLoginFromToken(httpServletRequest);
         return ResponseEntity.ok(new MessageResponse(login));
     }
 
     @GetMapping("/exist/{login}")
-    public ResponseEntity<?> checkUserLogin(@PathVariable String login) {
+    public ResponseEntity<Object> checkUserLogin(@PathVariable String login) {
         if (userService.checkUserOnExist(login))
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         else
@@ -43,20 +43,20 @@ public class UserController {
     }
 
     @GetMapping("/status-dates/{login}")
-    public ResponseEntity<?> getStatusAndDates(@PathVariable String login) {
+    public ResponseEntity<Object> getStatusAndDates(@PathVariable String login) {
         return ResponseEntity.ok(userService.getUserLastLoginDate(login));
     }
 
     @PreAuthorize("hasAnyRole('USER','DEV')")
     @PatchMapping("/logout/{login}")
-    public ResponseEntity<?> logoutFromUser(@PathVariable String login) {
+    public ResponseEntity<Object> logoutFromUser(@PathVariable String login) {
         userService.logoutAsUser(login);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PreAuthorize("hasRole('USER')")
     @PostMapping("/balance-add")
-    public ResponseEntity<?> addBalance(@Valid @RequestBody BalanceRequest balanceRequest,
+    public ResponseEntity<Object> addBalance(@Valid @RequestBody BalanceRequest balanceRequest,
             HttpServletRequest httpServletRequest) {
         String login = authService.getLoginFromToken(httpServletRequest);
         userService.addBalance(login, balanceRequest.getBalance());
@@ -65,13 +65,13 @@ public class UserController {
 
     @PreAuthorize("hasRole('USER')")
     @GetMapping("/balance")
-    public ResponseEntity<?> getUserBalance(HttpServletRequest httpServletRequest) {
+    public ResponseEntity<Object> getUserBalance(HttpServletRequest httpServletRequest) {
         String login = authService.getLoginFromToken(httpServletRequest);
         return ResponseEntity.ok(new BalanceResponse(userService.getBalance(login), userService.getBonuses(login)));
     }
 
     @PatchMapping("/is-tutorial-completed")
-    public ResponseEntity<?> patchIsTutorialCompleted(@RequestBody Boolean isTutorialCompleted,
+    public ResponseEntity<Object> patchIsTutorialCompleted(@RequestBody Boolean isTutorialCompleted,
             HttpServletRequest httpServletRequest) {
         String login = authService.getLoginFromToken(httpServletRequest);
         userService.updateIsTutorialCompleted(login, isTutorialCompleted);

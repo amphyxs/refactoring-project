@@ -42,7 +42,7 @@ public class ReviewController {
     }
 
     @GetMapping()
-    public ResponseEntity<?> getGamesBySelectedGame(@RequestParam(defaultValue = "0") int page,
+    public ResponseEntity<Object> getGamesBySelectedGame(@RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam String selectedGame) {
 
@@ -51,7 +51,7 @@ public class ReviewController {
 
     @PostMapping()
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<?> addReview(@Valid @RequestBody ReviewRequest reviewRequest,
+    public ResponseEntity<Object> addReview(@Valid @RequestBody ReviewRequest reviewRequest,
             HttpServletRequest httpServletRequest) {
         String login = authService.getLoginFromToken(httpServletRequest);
         User user = userService.getUserByLogin(login);

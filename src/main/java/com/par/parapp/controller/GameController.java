@@ -54,12 +54,12 @@ public class GameController {
     }
 
     @GetMapping("{gameName}")
-    public ResponseEntity<?> getGameInfo(@PathVariable String gameName) {
+    public ResponseEntity<Object> getGameInfo(@PathVariable String gameName) {
         return ResponseEntity.ok(gameService.getGameInfo(gameName));
     }
 
     @GetMapping("check/{gameName}")
-    public ResponseEntity<?> checkGameName(@PathVariable String gameName) {
+    public ResponseEntity<Object> checkGameName(@PathVariable String gameName) {
         if (gameService.checkGameOnExist(gameName)) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else
@@ -68,7 +68,7 @@ public class GameController {
 
     @PreAuthorize("hasRole('USER')")
     @PostMapping()
-    public ResponseEntity<?> buyGame(@RequestBody GameNameRequest gameNameRequest,
+    public ResponseEntity<Object> buyGame(@RequestBody GameNameRequest gameNameRequest,
             HttpServletRequest httpServletRequest) {
         String login = authService.getLoginFromToken(httpServletRequest);
         Game game = gameService.getGameByName(gameNameRequest.getGameName());
@@ -83,7 +83,7 @@ public class GameController {
     }
 
     @GetMapping()
-    public ResponseEntity<?> getAllGames(@RequestParam(value = "page", defaultValue = "0") int page,
+    public ResponseEntity<Object> getAllGames(@RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "10") int size) {
         return ResponseEntity.ok(gameService.getAllGames(page, size));
     }
@@ -92,7 +92,8 @@ public class GameController {
      * @PreAuthorize("hasAnyRole('USER','DEV')")
      * 
      * @GetMapping()
-     * public ResponseEntity<?> getAllGamesByLogin(@RequestParam(value = "page",
+     * public ResponseEntity<Object> getAllGamesByLogin(@RequestParam(value =
+     * "page",
      * defaultValue = "0") int page,
      * 
      * @RequestParam(value = "size", defaultValue = "10") int size,
