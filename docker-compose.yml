@@ -13,3 +13,45 @@ services:
       - ./db/function_procedure.sql:/docker-entrypoint-initdb.d/function_procedure.sql
       - ./db/index.sql:/docker-entrypoint-initdb.d/index.sql
       - ./db/trigger.sql:/docker-entrypoint-initdb.d/trigger.sql
+  app:
+    build: .
+    profiles: [main]
+    depends_on:
+      - postgres
+    network_mode: host
+    env_file: ".env"
+
+  sonarqube:
+    image: sonarqube:latest
+    container_name: sonarqube
+    profiles: [sonarqube]
+    ports:
+      - "9000:9000"
+    env_file: "sonarqube.env"
+    volumes:
+      - sonarqube_data:/opt/sonarqube/data
+      - sonarqube_extensions:/opt/sonarqube/extensions
+      - sonarqube_logs:/opt/sonarqube/logs
+
+  sonarqube-db:
+    image: postgres:latest
+    container_name: sonar_db
+    profiles: [sonarqube]
+    env_file: "sonarqube.env"
+    volumes:
+      - sonar_db_data:/var/lib/postgresql/data
+
+  sonarqube-check-app:
+    build:
+      dockerfile: sonarqube.Dockerfile
+    profiles: [sonarqube]
+    depends_on:
+      - sonarqube
+    network_mode: host
+    env_file: "sonarqube.env"
+
+volumes:
+  sonarqube_data:
+  sonarqube_extensions:
+  sonarqube_logs:
+  sonar_db_data:
