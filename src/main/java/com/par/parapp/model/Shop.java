@@ -37,11 +37,11 @@ public class Shop {
         this.game = game;
         this.price = price;
         this.description = description;
-        this.pictureCover = pictures.pictureCover;
-        this.pictureShop = pictures.pictureShop;
-        this.pictureGamePlay1 = pictures.pictureGameplay1;
-        this.pictureGamePlay2 = pictures.pictureGameplay2;
-        this.pictureGamePlay3 = pictures.pictureGameplay3;
+        this.pictureCover = pictures.getPictureCover();
+        this.pictureShop = pictures.getPictureShop();
+        this.pictureGamePlay1 = pictures.getPictureGameplay1();
+        this.pictureGamePlay2 = pictures.getPictureGameplay2();
+        this.pictureGamePlay3 = pictures.getPictureGameplay3();
     }
 
     public Shop() {
@@ -83,8 +83,8 @@ public class Shop {
         return pictureCover;
     }
 
-    public void setPictureCover(String picture_cover) {
-        this.pictureCover = picture_cover;
+    public void setPictureCover(String pictureCover) {
+        this.pictureCover = pictureCover;
     }
 
     public String getPictureShop() {
@@ -99,23 +99,23 @@ public class Shop {
         return pictureGamePlay1;
     }
 
-    public void setPictureGamePlay1(String picture_gameplay_1) {
-        this.pictureGamePlay1 = picture_gameplay_1;
+    public void setPictureGamePlay1(String pictureGameplay1) {
+        this.pictureGamePlay1 = pictureGameplay1;
     }
 
     public String getPictureGamePlay2() {
         return pictureGamePlay2;
     }
 
-    public void setPictureGamePlay2(String picture_gameplay_2) {
-        this.pictureGamePlay2 = picture_gameplay_2;
+    public void setPictureGamePlay2(String pictureGameplay2) {
+        this.pictureGamePlay2 = pictureGameplay2;
     }
 
     public String getPictureGamePlay3() {
         return pictureGamePlay3;
     }
 
-    public void setPictureGamePlay3(String picture_gameplay_3) {
-        this.pictureGamePlay3 = picture_gameplay_3;
+    public void setPictureGamePlay3(String pictureGameplay3) {
+        this.pictureGamePlay3 = pictureGameplay3;
     }
 }

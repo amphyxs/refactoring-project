@@ -51,6 +51,8 @@ public class InventoryService {
                         case "Обычная" -> commonItem = item;
                         case "Редкая" -> rareItem = item;
                         case "Легендарная" -> legendaryItem = item;
+                        default ->
+                            throw new ResourceNotFoundException();
                     }
                 }
             }

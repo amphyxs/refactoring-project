@@ -126,9 +126,7 @@ public class LibraryService {
                 .orElseThrow(ResourceNotFoundException::new);
         List<Game> userGames = new ArrayList<>();
         libraryList = libraryData.getContent();
-        libraryList.forEach(library -> {
-            userGames.add(library.getGame());
-        });
+        libraryList.forEach(library -> userGames.add(library.getGame()));
         return userGames;
     }
 

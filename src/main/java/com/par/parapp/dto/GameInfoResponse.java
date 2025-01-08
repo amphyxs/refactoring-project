@@ -23,10 +23,10 @@ public class GameInfoResponse {
         this.developmentDate = developmentDate;
         this.devLogin = devLogin;
         this.gameDescription = gameDescription;
-        this.pictureCover = pictures.pictureCover;
-        this.pictureGameplay1 = pictures.pictureGameplay1;
-        this.pictureGameplay2 = pictures.pictureGameplay2;
-        this.pictureGameplay3 = pictures.pictureGameplay3;
+        this.pictureCover = pictures.getPictureCover();
+        this.pictureGameplay1 = pictures.getPictureGameplay1();
+        this.pictureGameplay2 = pictures.getPictureGameplay2();
+        this.pictureGameplay3 = pictures.getPictureGameplay3();
     }
 
     public String getGameName() {

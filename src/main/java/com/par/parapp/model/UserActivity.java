@@ -48,8 +48,8 @@ public class UserActivity {
         return activityText;
     }
 
-    public void setActivityText(String activity_text) {
-        this.activityText = activity_text;
+    public void setActivityText(String activityText) {
+        this.activityText = activityText;
     }
 
     public Timestamp getSendDate() {

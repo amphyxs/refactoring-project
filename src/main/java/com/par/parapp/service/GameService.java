@@ -76,11 +76,12 @@ public class GameService {
         String pictureGameplay2Resp = shop.getPictureGamePlay2();
         String pictureGameplay3Resp = shop.getPictureGamePlay3();
 
-        var pictures = new GamePictures();
-        pictures.pictureCover = pictureCoverResp;
-        pictures.pictureGameplay1 = pictureGameplay1Resp;
-        pictures.pictureGameplay2 = pictureGameplay2Resp;
-        pictures.pictureGameplay3 = pictureGameplay3Resp;
+        var pictures = new GamePictures(
+                null,
+                pictureCoverResp,
+                pictureGameplay1Resp,
+                pictureGameplay2Resp,
+                pictureGameplay3Resp);
 
         return new GameInfoResponse(gameNameResp, priceResp, genresResp,
                 developmentDateResp, devLoginResp, gameDescriptionResp,

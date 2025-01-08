@@ -24,12 +24,12 @@ public class DevService {
         Game game = gameService.saveGame(uploadGameRequest.getName(), uploadGameRequest.getGenres(),
                 uploadGameRequest.getDevLogin(), uploadGameRequest.getGameUrl());
 
-        var pictures = new GamePictures();
-        pictures.pictureCover = uploadGameRequest.getPictureCover();
-        pictures.pictureShop = uploadGameRequest.getPictureShop();
-        pictures.pictureGameplay1 = uploadGameRequest.getPictureGameplay1();
-        pictures.pictureGameplay2 = uploadGameRequest.getPictureGameplay2();
-        pictures.pictureGameplay3 = uploadGameRequest.getPictureGameplay3();
+        var pictures = new GamePictures(
+                uploadGameRequest.getPictureShop(),
+                uploadGameRequest.getPictureCover(),
+                uploadGameRequest.getPictureGameplay1(),
+                uploadGameRequest.getPictureGameplay2(),
+                uploadGameRequest.getPictureGameplay3());
 
         shopService.saveShop(game, uploadGameRequest.getPrice(), uploadGameRequest.getDescription(),
                 pictures);

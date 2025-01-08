@@ -71,10 +71,8 @@ public class ErrorHandlingControllerAdvice {
         Throwable cause = e.getCause();
         while (cause != null) {
             // Проверяем, связано ли исключение с PostgreSQL
-            if (cause instanceof PSQLException psqlException) {
-                if (psqlException.getServerErrorMessage() != null) {
-                    return psqlException.getServerErrorMessage().getMessage();
-                }
+            if (cause instanceof PSQLException psqlException && psqlException.getServerErrorMessage() != null) {
+                return psqlException.getServerErrorMessage().getMessage();
             }
             cause = cause.getCause(); // Пробуем получить более глубокую причину
         }
