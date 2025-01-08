@@ -13,6 +13,7 @@ public class Genre {
     private String name;
 
     public Genre() {
+        super();
     }
 
     public Long getId() {

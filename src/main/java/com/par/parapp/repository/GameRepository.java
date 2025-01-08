@@ -13,7 +13,7 @@ public interface GameRepository extends JpaRepository<Game, Long> {
     Optional<Game> getByNameInAnyRegister(@Param("game_name") String name);
 
     @Query(value = "SELECT * FROM games WHERE upper(games.game_url)=upper(:game_url)", nativeQuery = true)
-    Optional<Game> getByGameUrlInAnyRegister(@Param("game_url") String game_url);
+    Optional<Game> getByGameUrlInAnyRegister(@Param("game_url") String gameUrl);
 
     boolean existsByName(String name);
 

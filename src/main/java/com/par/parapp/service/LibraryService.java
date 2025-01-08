@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import com.par.parapp.dto.LastGamesResponse;
 import com.par.parapp.dto.LibraryDataResponse;
+import com.par.parapp.exception.BonusesForRefundWereSpentException;
 import com.par.parapp.exception.ResourceNotFoundException;
 import com.par.parapp.model.Game;
 import com.par.parapp.model.Library;
@@ -42,6 +43,8 @@ public class LibraryService {
     private final UserRepository userRepository;
 
     private final WalletRepository walletRepository;
+
+    private static final String SUCCESS_TRANSACTION_STATUS = "success";
 
     public LibraryService(LibraryRepository libraryRepository, ShopRepository shopRepository,
             GameRepository gameRepository, TransactionRepository transactionRepository, UserRepository userRepository,
@@ -72,18 +75,18 @@ public class LibraryService {
 
         allLibraryEntries.forEach(library -> {
 
-            String game_name_to_send = library.getGame().getName();
-            String game_picture_to_send = libraryRepository.getGameShopPictureByGameName(library.getGame().getName());
-            String last_run_date_to_send;
+            String gameNameToSend = library.getGame().getName();
+            String gamePictureToSend = libraryRepository.getGameShopPictureByGameName(library.getGame().getName());
+            String lastRunDateToSend;
             if (library.getLastRunDate() == null)
-                last_run_date_to_send = "";
+                lastRunDateToSend = "";
             else
-                last_run_date_to_send = library.getLastRunDate().toString().substring(0,
+                lastRunDateToSend = library.getLastRunDate().toString().substring(0,
                         library.getLastRunDate().toString().indexOf('.'));
 
-            libraryDataResponses.add(new LibraryDataResponse(game_name_to_send,
-                    game_picture_to_send,
-                    last_run_date_to_send, library.getGame().getGameUrl()));
+            libraryDataResponses.add(new LibraryDataResponse(gameNameToSend,
+                    gamePictureToSend,
+                    lastRunDateToSend, library.getGame().getGameUrl()));
 
         });
 
@@ -139,7 +142,7 @@ public class LibraryService {
 
         if (bonusesTransaction.getAmount() > 0) {
             if (user.getWallet().getBonuses() < bonusesTransaction.getAmount()) {
-                throw new RuntimeException("User has spent bonuses those must be taken back");
+                throw new BonusesForRefundWereSpentException();
             }
 
             user.getWallet().setBonuses(user.getWallet().getBonuses() - bonusesTransaction.getAmount());
@@ -165,13 +168,13 @@ public class LibraryService {
             bonusesToAdd = 0.0d;
             transactionRepository
                     .save(new Transaction(buyer, "bonuses", -bonusesToUse, new Timestamp(System.currentTimeMillis()),
-                            "success", null, game, null));
+                            SUCCESS_TRANSACTION_STATUS, null, game, null));
         } else {
             bonusesToUse = 0.0d;
             bonusesToAdd = shopItem.getPrice() * 0.05d;
             transactionRepository
                     .save(new Transaction(buyer, "bonuses", bonusesToAdd, new Timestamp(System.currentTimeMillis()),
-                            "success", null, game, null));
+                            SUCCESS_TRANSACTION_STATUS, null, game, null));
         }
 
         Double initialBalance = buyer.getWallet().getBalance();
@@ -180,7 +183,7 @@ public class LibraryService {
         buyer.getWallet().setBalance(initialBalance + bonusesToUse - shopItem.getPrice());
         transactionRepository
                 .save(new Transaction(buyer, "balance", shopItem.getPrice(), new Timestamp(System.currentTimeMillis()),
-                        "success", null, game, null));
+                        SUCCESS_TRANSACTION_STATUS, null, game, null));
         buyer.getWallet().setBonuses(buyer.getWallet().getBonuses() + bonusesToAdd);
 
         walletRepository.save(buyer.getWallet());

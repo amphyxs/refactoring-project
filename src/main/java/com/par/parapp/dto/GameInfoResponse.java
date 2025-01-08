@@ -16,18 +16,17 @@ public class GameInfoResponse {
 
     public GameInfoResponse(String gameName, Double price, List<String> genres,
             String developmentDate, String devLogin, String gameDescription,
-            String pictureCover, String pictureGameplay1, String pictureGameplay2,
-            String pictureGameplay3) {
+            GamePictures pictures) {
         this.gameName = gameName;
         this.price = price;
         this.genres = genres;
         this.developmentDate = developmentDate;
         this.devLogin = devLogin;
         this.gameDescription = gameDescription;
-        this.pictureCover = pictureCover;
-        this.pictureGameplay1 = pictureGameplay1;
-        this.pictureGameplay2 = pictureGameplay2;
-        this.pictureGameplay3 = pictureGameplay3;
+        this.pictureCover = pictures.pictureCover;
+        this.pictureGameplay1 = pictures.pictureGameplay1;
+        this.pictureGameplay2 = pictures.pictureGameplay2;
+        this.pictureGameplay3 = pictures.pictureGameplay3;
     }
 
     public String getGameName() {

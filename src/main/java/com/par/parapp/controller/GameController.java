@@ -21,7 +21,6 @@ import com.par.parapp.service.AuthService;
 import com.par.parapp.service.GameService;
 import com.par.parapp.service.InventoryService;
 import com.par.parapp.service.LibraryService;
-import com.par.parapp.service.ShopService;
 import com.par.parapp.service.UserService;
 
 @RestController
@@ -37,19 +36,16 @@ public class GameController {
 
     private final InventoryService inventoryService;
 
-    private final ShopService shopService;
-
     private final AuthService authService;
 
     public GameController(GameService gameService,
             UserService userService, LibraryService libraryService,
-            InventoryService inventoryService, ShopService shopService,
+            InventoryService inventoryService,
             AuthService authService) {
         this.gameService = gameService;
         this.userService = userService;
         this.libraryService = libraryService;
         this.inventoryService = inventoryService;
-        this.shopService = shopService;
         this.authService = authService;
     }
 
@@ -87,19 +83,4 @@ public class GameController {
             @RequestParam(value = "size", defaultValue = "10") int size) {
         return ResponseEntity.ok(gameService.getAllGames(page, size));
     }
-
-    /*
-     * @PreAuthorize("hasAnyRole('USER','DEV')")
-     * 
-     * @GetMapping()
-     * public ResponseEntity<Object> getAllGamesByLogin(@RequestParam(value =
-     * "page",
-     * defaultValue = "0") int page,
-     * 
-     * @RequestParam(value = "size", defaultValue = "10") int size,
-     * HttpServletRequest httpServletRequest) {
-     * String login = authService.getLoginFromToken(httpServletRequest);
-     * return ResponseEntity.ok(libraryService.getUserGames(login, page, size));
-     * }
-     */
 }

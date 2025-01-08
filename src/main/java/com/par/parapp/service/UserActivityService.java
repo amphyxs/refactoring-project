@@ -35,11 +35,10 @@ public class UserActivityService {
         List<UserActivity> userActivityList = data.getContent();
 
         List<UserActivityResponse> userActivityResponseList = new ArrayList<>();
-        userActivityList.forEach(userActivity -> {
-            userActivityResponseList.add(new UserActivityResponse(userActivity.getSendDate().toString().substring(0,
-                    userActivity.getSendDate().toString().indexOf('.')),
-                    userActivity.getActivityText()));
-        });
+        userActivityList.forEach(userActivity -> userActivityResponseList.add(new UserActivityResponse(
+                userActivity.getSendDate().toString().substring(0,
+                        userActivity.getSendDate().toString().indexOf('.')),
+                userActivity.getActivityText())));
 
         userActivityResponseList.sort(Comparator.comparing(UserActivityResponse::getSendDate));
         Collections.reverse(userActivityResponseList);

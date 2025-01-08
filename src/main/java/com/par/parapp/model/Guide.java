@@ -61,15 +61,15 @@ public class Guide {
         return guideText;
     }
 
-    public void setGuideText(String guide_text) {
-        this.guideText = guide_text;
+    public void setGuideText(String guideText) {
+        this.guideText = guideText;
     }
 
     public Timestamp getSendDate() {
         return sendDate;
     }
 
-    public void setSendDate(Timestamp send_date) {
-        this.sendDate = send_date;
+    public void setSendDate(Timestamp sendDate) {
+        this.sendDate = sendDate;
     }
 }

@@ -56,7 +56,7 @@ public class UserActivity {
         return sendDate;
     }
 
-    public void setSendDate(Timestamp send_date) {
-        this.sendDate = send_date;
+    public void setSendDate(Timestamp sendDate) {
+        this.sendDate = sendDate;
     }
 }

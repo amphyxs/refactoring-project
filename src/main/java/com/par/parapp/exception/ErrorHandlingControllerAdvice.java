@@ -1,8 +1,12 @@
 package com.par.parapp.exception;
 
-import com.fasterxml.jackson.databind.exc.InvalidFormatException;
-import com.fasterxml.jackson.databind.exc.MismatchedInputException;
-import com.par.parapp.dto.ErrorResponse;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.validation.ConstraintViolationException;
+
+import org.postgresql.util.PSQLException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.orm.jpa.JpaSystemException;
@@ -12,13 +16,10 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.hibernate.exception.GenericJDBCException;
-import org.postgresql.util.PSQLException;
 
-import javax.validation.ConstraintViolationException;
-import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import com.fasterxml.jackson.databind.exc.MismatchedInputException;
+import com.par.parapp.dto.ErrorResponse;
 
 @ControllerAdvice
 public class ErrorHandlingControllerAdvice {
@@ -26,7 +27,7 @@ public class ErrorHandlingControllerAdvice {
     @ExceptionHandler({ MethodArgumentNotValidException.class })
     public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException e) {
         Map<String, String> errors = new HashMap<>();
-        e.getBindingResult().getAllErrors().forEach((error) -> {
+        e.getBindingResult().getAllErrors().forEach(error -> {
             String fieldName = ((FieldError) error).getField();
             String errorMessage = error.getDefaultMessage();
             errors.put(fieldName, errorMessage);
@@ -70,8 +71,7 @@ public class ErrorHandlingControllerAdvice {
         Throwable cause = e.getCause();
         while (cause != null) {
             // Проверяем, связано ли исключение с PostgreSQL
-            if (cause instanceof PSQLException) {
-                PSQLException psqlException = (PSQLException) cause;
+            if (cause instanceof PSQLException psqlException) {
                 if (psqlException.getServerErrorMessage() != null) {
                     return psqlException.getServerErrorMessage().getMessage();
                 }

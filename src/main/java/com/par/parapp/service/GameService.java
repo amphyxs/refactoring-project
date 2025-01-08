@@ -1,6 +1,7 @@
 package com.par.parapp.service;
 
 import com.par.parapp.dto.GameInfoResponse;
+import com.par.parapp.dto.GamePictures;
 import com.par.parapp.exception.*;
 import com.par.parapp.model.*;
 import com.par.parapp.repository.GameRepository;
@@ -63,22 +64,27 @@ public class GameService {
 
     public GameInfoResponse getGameInfo(String gameName) {
         Shop shop = shopRepository.getShopByGameName(gameName).orElseThrow(ResourceNotFoundException::new);
-        String game_name_resp = shop.getGame().getName();
-        Double price_resp = shop.getPrice();
-        List<String> genres_resp = shop.getGame().getGenres().stream()
+        String gameNameResp = shop.getGame().getName();
+        Double priceResp = shop.getPrice();
+        List<String> genresResp = shop.getGame().getGenres().stream()
                 .map(Genre::getName).toList();
-        String development_date_resp = shop.getGame().getDevelopmentDate().toString();
-        String dev_login_resp = shop.getGame().getUser().getLogin();
-        String game_description_resp = shop.getDescription();
-        String picture_cover_resp = shop.getPictureCover();
-        String picture_gameplay_1_resp = shop.getPictureGamePlay1();
-        String picture_gameplay_2_resp = shop.getPictureGamePlay2();
-        String picture_gameplay_3_resp = shop.getPictureGamePlay3();
+        String developmentDateResp = shop.getGame().getDevelopmentDate().toString();
+        String devLoginResp = shop.getGame().getUser().getLogin();
+        String gameDescriptionResp = shop.getDescription();
+        String pictureCoverResp = shop.getPictureCover();
+        String pictureGameplay1Resp = shop.getPictureGamePlay1();
+        String pictureGameplay2Resp = shop.getPictureGamePlay2();
+        String pictureGameplay3Resp = shop.getPictureGamePlay3();
 
-        return new GameInfoResponse(game_name_resp, price_resp, genres_resp,
-                development_date_resp, dev_login_resp, game_description_resp,
-                picture_cover_resp, picture_gameplay_1_resp,
-                picture_gameplay_2_resp, picture_gameplay_3_resp);
+        var pictures = new GamePictures();
+        pictures.pictureCover = pictureCoverResp;
+        pictures.pictureGameplay1 = pictureGameplay1Resp;
+        pictures.pictureGameplay2 = pictureGameplay2Resp;
+        pictures.pictureGameplay3 = pictureGameplay3Resp;
+
+        return new GameInfoResponse(gameNameResp, priceResp, genresResp,
+                developmentDateResp, devLoginResp, gameDescriptionResp,
+                pictures);
 
     }
 

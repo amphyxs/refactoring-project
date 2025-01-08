@@ -20,7 +20,7 @@ public interface MarketRepository extends JpaRepository<Market, Long> {
     Optional<Market> getMarketById(@Param("id") Long id);
 
     @Query(value = "SELECT * FROM market WHERE market.item_id IN (SELECT items.id FROM items WHERE upper(items.name) LIKE concat('%',upper(:item_name),'%'))", nativeQuery = true)
-    Optional<List<Market>> getAllFromMarketByItemNameFilter(@Param("item_name") String item_name);
+    Optional<List<Market>> getAllFromMarketByItemNameFilter(@Param("item_name") String itemName);
 
     @Transactional
     void deleteMarketById(Long id);

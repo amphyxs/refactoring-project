@@ -42,7 +42,7 @@ public interface UserRepository extends JpaRepository<User, String> {
         @Modifying
         @Query(value = "CALL chargebalanceForSoldItem(:arg_login, :arg_balance, :arg_item_id);", nativeQuery = true)
         void chargeBalanceCustomer(@Param("arg_login") String login, @Param("arg_balance") Double balance,
-                        @Param("arg_item_id") Long item_id);
+                        @Param("arg_item_id") Long itemId);
 
         @Query(value = "SELECT balance FROM Wallets WHERE id = (SELECT wallet_id FROM Users WHERE login = :arg_login);", nativeQuery = true)
         Double getBalance(@Param("arg_login") String login);

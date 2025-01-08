@@ -57,7 +57,7 @@ public class Library {
         return lastRunDate;
     }
 
-    public void setLastRunDate(Timestamp last_run_date) {
-        this.lastRunDate = last_run_date;
+    public void setLastRunDate(Timestamp lastRunDate) {
+        this.lastRunDate = lastRunDate;
     }
 }

@@ -52,13 +52,11 @@ public class GuideService {
             guideList = getAllGuidesByGameName(selectedGame, page, size);
 
         List<GuidesResponse> guidesResponses = new ArrayList<>();
-        guideList.forEach(guide -> {
-            guidesResponses.add(new GuidesResponse(guide.getUser().getLogin(),
-                    guide.getSendDate().toString().substring(0,
-                            guide.getSendDate().toString().indexOf('.')),
-                    guide.getGuideText(),
-                    shopService.getGamePicture(guide.getGame().getName()), guide.getGame().getName()));
-        });
+        guideList.forEach(guide -> guidesResponses.add(new GuidesResponse(guide.getUser().getLogin(),
+                guide.getSendDate().toString().substring(0,
+                        guide.getSendDate().toString().indexOf('.')),
+                guide.getGuideText(),
+                shopService.getGamePicture(guide.getGame().getName()), guide.getGame().getName())));
         guidesResponses.sort(Comparator.comparing(GuidesResponse::getSendDate));
         Collections.reverse(guidesResponses);
         return guidesResponses;
