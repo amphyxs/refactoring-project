@@ -28,10 +28,9 @@ class AuthControllerIntegrationTest {
 
     @Test
     void testSignUpAndSignIn() throws Exception {
-        // Register a new user
         SignUpRequest signUpRequest = new SignUpRequest(
-            "testuser", // 5-10 characters
-            "testpass123", // 8-255 characters
+            "testuser", 
+            "testpass123",
             "testuser@example.com",
             false
         );
@@ -43,10 +42,9 @@ class AuthControllerIntegrationTest {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.message").exists());
 
-        // Sign in with the registered user
         SignInRequest signInRequest = new SignInRequest();
-        signInRequest.setLogin("testuser"); // Must be 5-10 characters
-        signInRequest.setPassword("testpass123"); // Must be at least 8 characters
+        signInRequest.setLogin("testuser"); 
+        signInRequest.setPassword("testpass123"); 
 
         mockMvc.perform(post("/auth/sign-in")
                 .contentType(MediaType.APPLICATION_JSON)
