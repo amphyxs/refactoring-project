@@ -9,7 +9,4 @@ import java.util.Optional;
 
 public interface GenreRepository extends JpaRepository<Genre, Long> {
     Optional<Genre> findByName(String name);
-
-    @Query(value = "SELECT * FROM genres WHERE upper(name)=upper(:name) LIMIT 1", nativeQuery = true)
-    Optional<Genre> findFirstByNameIgnoreCase(@Param("name") String name);
 }

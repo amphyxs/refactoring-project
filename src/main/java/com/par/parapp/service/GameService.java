@@ -45,7 +45,7 @@ public class GameService {
 
     reqGenres.forEach(r -> {
         Genre genre = genreRepository
-            .findFirstByNameIgnoreCase(r)
+            .findByName(r)
             .orElseThrow(ResourceNotFoundException::new); // genre name: r
         genres.add(genre);
     });

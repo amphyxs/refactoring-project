@@ -127,9 +127,9 @@ class GameControllerIntegrationTest {
         
         userJwtToken = objectMapper.readTree(response).get("jwt").asText();
         
-        Genre actionGenre = genreRepository.findFirstByNameIgnoreCase("Action")
+        Genre actionGenre = genreRepository.findByName("Action")
                 .orElseThrow(() -> new RuntimeException("Action genre not found"));
-        Genre adventureGenre = genreRepository.findFirstByNameIgnoreCase("Adventure")
+        Genre adventureGenre = genreRepository.findByName("Adventure")
                 .orElseThrow(() -> new RuntimeException("Adventure genre not found"));
         
         Set<Genre> genres = new HashSet<>();
