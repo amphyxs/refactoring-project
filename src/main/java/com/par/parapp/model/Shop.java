@@ -19,12 +19,16 @@ public class Shop {
 
     private String pictureCover;
 
+    @Column(name = "picture_shop")
     private String picture_shop;
 
+    @Column(name = "picture_gameplay_1")
     private String pictureGamePlay1;
 
+    @Column(name = "picture_gameplay_2")
     private String pictureGamePlay2;
 
+    @Column(name = "picture_gameplay_3")
     private String pictureGamePlay3;
 
     public Shop(Game game, Double price, String description, String pictureCover, String picture_shop,
