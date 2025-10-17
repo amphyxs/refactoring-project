@@ -62,25 +62,25 @@ public class InventoryService {
             if (rnd > 0.95) {
 
                 if (legendaryItem != null) {
-                    inventoryRepository.save(new Inventory(user, legendaryItem, 0));
+                    inventoryRepository.save(new Inventory(user, legendaryItem, 1));
                     return 1;
                 } else if (rareItem != null) {
-                    inventoryRepository.save(new Inventory(user, rareItem, 0));
+                    inventoryRepository.save(new Inventory(user, rareItem, 1));
                     return 1;
                 } else if (commonItem != null) {
-                    inventoryRepository.save(new Inventory(user, commonItem, 0));
+                    inventoryRepository.save(new Inventory(user, commonItem, 1));
                     return 1;
                 }
 
             } else if (rareItem != null) {
-                inventoryRepository.save(new Inventory(user, rareItem, 0));
+                inventoryRepository.save(new Inventory(user, rareItem, 1));
                 return 1;
             } else if (commonItem != null) {
-                inventoryRepository.save(new Inventory(user, commonItem, 0));
+                inventoryRepository.save(new Inventory(user, commonItem, 1));
                 return 1;
             }
         } else if (commonItem != null) {
-            inventoryRepository.save(new Inventory(user, commonItem, 0));
+            inventoryRepository.save(new Inventory(user, commonItem, 1));
             return 1;
         }
         return 0;
