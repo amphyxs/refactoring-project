@@ -43,12 +43,12 @@ public class GameService {
 
         Set<Genre> genres = new HashSet<>();
 
-    reqGenres.forEach(r -> {
-        Genre genre = genreRepository
-            .findByName(r)
-            .orElseThrow(ResourceNotFoundException::new); // genre name: r
-        genres.add(genre);
-    });
+        reqGenres.forEach(r -> {
+            Genre genre = genreRepository
+                    .findByName(r)
+                    .orElseThrow(ResourceNotFoundException::new);
+            genres.add(genre);
+        });
 
         Game game = new Game(name, LocalDate.now());
         game.setGenres(genres);
