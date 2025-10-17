@@ -1,8 +1,6 @@
 name: Integration Tests
 
 on:
-  push:
-    branches: [ main, develop, stage-1 ]
   pull_request:
     branches: [ main, develop ]
   workflow_dispatch:
