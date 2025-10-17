@@ -135,9 +135,39 @@ class LibraryControllerIntegrationTest {
 
     @Test
     void testRefundGame() throws Exception {
+        // Purchase a fresh game for refund test
+        String refundGameName = "RefundTestGame";
+        
+        // Upload a new game
+        UploadGameRequest uploadRequest = new UploadGameRequest();
+        uploadRequest.setName(refundGameName);
+        uploadRequest.setDevLogin(devLogin);
+        uploadRequest.setGameUrl("https://refundtest.com");
+        uploadRequest.setPrice(15.99);
+        uploadRequest.setDescription("Game for refund test");
+        uploadRequest.setPictureCover("https://example.com/cover2.jpg");
+        uploadRequest.setPictureShop("https://example.com/shop2.jpg");
+        uploadRequest.setPictureGameplay1("https://example.com/gameplay1.jpg");
+        uploadRequest.setPictureGameplay2("https://example.com/gameplay2.jpg");
+        uploadRequest.setPictureGameplay3("https://example.com/gameplay3.jpg");
+        uploadRequest.setGenres(new HashSet<>(Arrays.asList("Action")));
+
+        mockMvc.perform(post("/dev")
+                .header("Authorization", "Bearer " + devJwtToken)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(uploadRequest)));
+
+        // Purchase the game
+        GameNameRequest gameRequest = new GameNameRequest(refundGameName, false);
+        mockMvc.perform(post("/game")
+                .header("Authorization", "Bearer " + userJwtToken)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(gameRequest)));
+
+        // Now refund it
         mockMvc.perform(post("/library/refund")
                 .header("Authorization", "Bearer " + userJwtToken)
-                .param("gameName", testGameName))
+                .param("gameName", refundGameName))
                 .andExpect(status().isOk());
     }
 
