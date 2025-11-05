@@ -11,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -42,11 +41,6 @@ public class ErrorHandlingControllerAdvice {
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
-    // @ExceptionHandler({ UsernameNotFoundException.class, ResourceNotFoundException.class })
-    // public ResponseEntity<ErrorResponse> handleNotFoundExceptions(RuntimeException e) {
-    //     ErrorResponse errorResponse = new ErrorResponse(e.getMessage());
-    //     return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
-    // }
 
     @ExceptionHandler(InvalidFormatException.class)
     public ResponseEntity<ErrorResponse> handleInvalidFormatException(InvalidFormatException e) {
@@ -80,7 +74,8 @@ public class ErrorHandlingControllerAdvice {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<?> handleAnyException(Exception e) {
-        return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
+    public ResponseEntity<ErrorResponse> handleAnyException(Exception e) {
+        ErrorResponse errorResponse = new ErrorResponse(e.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

@@ -104,16 +104,44 @@ public class Transaction {
     @JoinColumn(name = "wallet_id", referencedColumnName = "id")
     private Wallet wallet;
 
-    public Transaction(User user, String paymentMethod, Double amount, Timestamp transactionDate,
-            String transactionStatus, Item item, Game game, Wallet wallet) {
-        this.user = user;
-        this.paymentMethod = paymentMethod;
-        this.amount = amount;
-        this.transactionDate = transactionDate;
-        this.transactionStatus = transactionStatus;
-        this.item = item;
-        this.game = game;
-        this.wallet = wallet;
+    public static class TransactionParams {
+        private User user;
+        private String paymentMethod;
+        private Double amount;
+        private Timestamp transactionDate;
+        private String transactionStatus;
+        private Item item;
+        private Game game;
+        private Wallet wallet;
+
+        public void setUser(User user) { this.user = user; }
+        public void setPaymentMethod(String paymentMethod) { this.paymentMethod = paymentMethod; }
+        public void setAmount(Double amount) { this.amount = amount; }
+        public void setTransactionDate(Timestamp transactionDate) { this.transactionDate = transactionDate; }
+        public void setTransactionStatus(String transactionStatus) { this.transactionStatus = transactionStatus; }
+        public void setItem(Item item) { this.item = item; }
+        public void setGame(Game game) { this.game = game; }
+        public void setWallet(Wallet wallet) { this.wallet = wallet; }
+
+        public User getUser() { return user; }
+        public String getPaymentMethod() { return paymentMethod; }
+        public Double getAmount() { return amount; }
+        public Timestamp getTransactionDate() { return transactionDate; }
+        public String getTransactionStatus() { return transactionStatus; }
+        public Item getItem() { return item; }
+        public Game getGame() { return game; }
+        public Wallet getWallet() { return wallet; }
+    }
+
+    public Transaction(TransactionParams params) {
+    this.user = params.getUser();
+    this.paymentMethod = params.getPaymentMethod();
+    this.amount = params.getAmount();
+    this.transactionDate = params.getTransactionDate();
+    this.transactionStatus = params.getTransactionStatus();
+    this.item = params.getItem();
+    this.game = params.getGame();
+    this.wallet = params.getWallet();
     }
 
     public Transaction() {
