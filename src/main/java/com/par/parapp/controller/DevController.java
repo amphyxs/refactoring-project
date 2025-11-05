@@ -24,7 +24,7 @@ public class DevController {
 
     @PreAuthorize("hasRole('DEV')")
     @PostMapping()
-    public ResponseEntity<?> uploadGame(@Valid @RequestBody UploadGameRequest uploadGameRequest) {
+    public ResponseEntity<Object> uploadGame(@Valid @RequestBody UploadGameRequest uploadGameRequest) {
 
         devService.uploadGame(uploadGameRequest);
 

@@ -67,8 +67,8 @@ public class Game {
         return developmentDate;
     }
 
-    public void setDevelopmentDate(LocalDate development_date) {
-        this.developmentDate = development_date;
+    public void setDevelopmentDate(LocalDate developmentDate) {
+        this.developmentDate = developmentDate;
     }
 
     public Set<Genre> getGenres() {
@@ -83,7 +83,7 @@ public class Game {
         return gameUrl;
     }
 
-    public void setGameUrl(String game_url) {
-        this.gameUrl = game_url;
+    public void setGameUrl(String gameUrl) {
+        this.gameUrl = gameUrl;
     }
 }

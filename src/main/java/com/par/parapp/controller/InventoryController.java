@@ -24,7 +24,7 @@ public class InventoryController {
 
     @GetMapping()
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<?> getAllItems(@RequestParam(defaultValue = "0") int page,
+    public ResponseEntity<Object> getAllItems(@RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             HttpServletRequest httpServletRequest) {
         String login = authService.getLoginFromToken(httpServletRequest);

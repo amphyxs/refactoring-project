@@ -18,12 +18,12 @@ public interface ShopRepository extends JpaRepository<Shop, Long> {
     Optional<List<Shop>> getAllFromShop();
 
     @Query(value = "SELECT * FROM  shop WHERE shop.game_id IN (SELECT games.id FROM games WHERE upper(games.name) LIKE concat('%',upper(:game_name),'%'))", nativeQuery = true)
-    Optional<List<Shop>> getAllFromShopByGameNameFilter(@Param("game_name") String game_name);
+    Optional<List<Shop>> getAllFromShopByGameNameFilter(@Param("game_name") String gameName);
 
     @Query(value = "SELECT * FROM shop where shop.game_id IN (SELECT games.id FROM games WHERE games.name=:game_name)", nativeQuery = true)
-    Optional<Shop> getShopByGameName(@Param("game_name") String game_name);
+    Optional<Shop> getShopByGameName(@Param("game_name") String gameName);
 
     @Query(value = "SELECT shop.picture_shop FROM shop where shop.game_id IN (SELECT games.id FROM games WHERE games.name=:game_name)", nativeQuery = true)
-    String getGameShopPictureByGameName(@Param("game_name") String game_name);
+    String getGameShopPictureByGameName(@Param("game_name") String gameName);
 
 }

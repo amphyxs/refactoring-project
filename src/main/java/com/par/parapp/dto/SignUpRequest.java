@@ -3,7 +3,6 @@ package com.par.parapp.dto;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-import java.util.Set;
 
 public class SignUpRequest {
 
@@ -53,6 +52,8 @@ public class SignUpRequest {
         this.email = email;
     }
 
-    public Boolean getIsDev() {return isDev;}
+    public Boolean getIsDev() {
+        return isDev;
+    }
 
 }

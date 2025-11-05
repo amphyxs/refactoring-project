@@ -1,5 +1,6 @@
 package com.par.parapp.service;
 
+import com.par.parapp.dto.GamePictures;
 import com.par.parapp.dto.ShopDataResponse;
 import com.par.parapp.exception.ResourceAlreadyExist;
 import com.par.parapp.exception.ResourceNotFoundException;
@@ -21,13 +22,12 @@ public class ShopService {
     }
 
     public void saveShop(Game game, Double price, String description,
-            String pictureCover, String pictureShop, String pictureGameplay1,
-            String pictureGameplay2, String pictureGameplay3) {
+            GamePictures pictures) {
 
-        if (shopRepository.existsByGame(game))
+        if (Boolean.TRUE.equals(shopRepository.existsByGame(game)))
             throw new ResourceAlreadyExist("Данная игра уже опубликована!");
-        shopRepository.save(new Shop(game, price, description, pictureCover, pictureShop,
-                pictureGameplay1, pictureGameplay2, pictureGameplay3));
+
+        shopRepository.save(new Shop(game, price, description, pictures));
 
     }
 
@@ -46,12 +46,9 @@ public class ShopService {
             List<String> genresResponse = shop.getGame().getGenres().stream()
                     .map(Genre::getName).toList();
 
-            if (genresReq.isEmpty()) {
+            if (genresReq.isEmpty() || new ArrayList<>(genresResponse).containsAll(genresReq)) {
                 shopDataResponses.add(new ShopDataResponse(shop.getGame().getName(), shop.getPrice(),
-                        shop.getPicture_shop(), genresResponse.stream().toList()));
-            } else if (new ArrayList<>(genresResponse).containsAll(genresReq)) {
-                shopDataResponses.add(new ShopDataResponse(shop.getGame().getName(), shop.getPrice(),
-                        shop.getPicture_shop(), genresResponse.stream().toList()));
+                        shop.getPictureShop(), genresResponse.stream().toList()));
             }
 
         });

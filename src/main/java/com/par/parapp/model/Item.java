@@ -66,7 +66,7 @@ public class Item {
         return itemUrl;
     }
 
-    public void setItemUrl(String item_url) {
-        this.itemUrl = item_url;
+    public void setItemUrl(String itemUrl) {
+        this.itemUrl = itemUrl;
     }
 }

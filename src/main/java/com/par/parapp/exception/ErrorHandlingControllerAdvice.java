@@ -1,24 +1,24 @@
 package com.par.parapp.exception;
 
-import com.fasterxml.jackson.databind.exc.InvalidFormatException;
-import com.fasterxml.jackson.databind.exc.MismatchedInputException;
-import com.par.parapp.dto.ErrorResponse;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.validation.ConstraintViolationException;
+
+import org.postgresql.util.PSQLException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.hibernate.exception.GenericJDBCException;
-import org.postgresql.util.PSQLException;
 
-import javax.validation.ConstraintViolationException;
-import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import com.fasterxml.jackson.databind.exc.MismatchedInputException;
+import com.par.parapp.dto.ErrorResponse;
 
 @ControllerAdvice
 public class ErrorHandlingControllerAdvice {
@@ -26,7 +26,7 @@ public class ErrorHandlingControllerAdvice {
     @ExceptionHandler({ MethodArgumentNotValidException.class })
     public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException e) {
         Map<String, String> errors = new HashMap<>();
-        e.getBindingResult().getAllErrors().forEach((error) -> {
+        e.getBindingResult().getAllErrors().forEach(error -> {
             String fieldName = ((FieldError) error).getField();
             String errorMessage = error.getDefaultMessage();
             errors.put(fieldName, errorMessage);
@@ -41,11 +41,6 @@ public class ErrorHandlingControllerAdvice {
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
-    // @ExceptionHandler({ UsernameNotFoundException.class, ResourceNotFoundException.class })
-    // public ResponseEntity<ErrorResponse> handleNotFoundExceptions(RuntimeException e) {
-    //     ErrorResponse errorResponse = new ErrorResponse(e.getMessage());
-    //     return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
-    // }
 
     @ExceptionHandler(InvalidFormatException.class)
     public ResponseEntity<ErrorResponse> handleInvalidFormatException(InvalidFormatException e) {
@@ -70,11 +65,8 @@ public class ErrorHandlingControllerAdvice {
         Throwable cause = e.getCause();
         while (cause != null) {
             // Проверяем, связано ли исключение с PostgreSQL
-            if (cause instanceof PSQLException) {
-                PSQLException psqlException = (PSQLException) cause;
-                if (psqlException.getServerErrorMessage() != null) {
-                    return psqlException.getServerErrorMessage().getMessage();
-                }
+            if (cause instanceof PSQLException psqlException && psqlException.getServerErrorMessage() != null) {
+                return psqlException.getServerErrorMessage().getMessage();
             }
             cause = cause.getCause(); // Пробуем получить более глубокую причину
         }
@@ -82,7 +74,8 @@ public class ErrorHandlingControllerAdvice {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<?> handleAnyException(Exception e) {
-        return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
+    public ResponseEntity<ErrorResponse> handleAnyException(Exception e) {
+        ErrorResponse errorResponse = new ErrorResponse(e.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

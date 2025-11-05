@@ -53,13 +53,11 @@ public class ReviewService {
             reviewList = getAllReviewsByGameName(selectedGame, page, size);
 
         List<ReviewsResponse> reviewsResponses = new ArrayList<>();
-        reviewList.forEach(review -> {
-            reviewsResponses.add(new ReviewsResponse(review.getUser().getLogin(),
-                    review.getSendDate().toString().substring(0,
-                            review.getSendDate().toString().indexOf('.')),
-                    review.getReviewText(),
-                    shopService.getGamePicture(review.getGame().getName()), review.getGame().getName()));
-        });
+        reviewList.forEach(review -> reviewsResponses.add(new ReviewsResponse(review.getUser().getLogin(),
+                review.getSendDate().toString().substring(0,
+                        review.getSendDate().toString().indexOf('.')),
+                review.getReviewText(),
+                shopService.getGamePicture(review.getGame().getName()), review.getGame().getName())));
         reviewsResponses.sort(Comparator.comparing(ReviewsResponse::getSendDate));
         Collections.reverse(reviewsResponses);
         return reviewsResponses;

@@ -21,7 +21,6 @@ import com.par.parapp.service.AuthService;
 import com.par.parapp.service.GameService;
 import com.par.parapp.service.InventoryService;
 import com.par.parapp.service.LibraryService;
-import com.par.parapp.service.ShopService;
 import com.par.parapp.service.UserService;
 
 @RestController
@@ -37,29 +36,26 @@ public class GameController {
 
     private final InventoryService inventoryService;
 
-    private final ShopService shopService;
-
     private final AuthService authService;
 
     public GameController(GameService gameService,
             UserService userService, LibraryService libraryService,
-            InventoryService inventoryService, ShopService shopService,
+            InventoryService inventoryService,
             AuthService authService) {
         this.gameService = gameService;
         this.userService = userService;
         this.libraryService = libraryService;
         this.inventoryService = inventoryService;
-        this.shopService = shopService;
         this.authService = authService;
     }
 
     @GetMapping("{gameName}")
-    public ResponseEntity<?> getGameInfo(@PathVariable String gameName) {
+    public ResponseEntity<Object> getGameInfo(@PathVariable String gameName) {
         return ResponseEntity.ok(gameService.getGameInfo(gameName));
     }
 
     @GetMapping("check/{gameName}")
-    public ResponseEntity<?> checkGameName(@PathVariable String gameName) {
+    public ResponseEntity<Object> checkGameName(@PathVariable String gameName) {
         if (gameService.checkGameOnExist(gameName)) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else
@@ -68,7 +64,7 @@ public class GameController {
 
     @PreAuthorize("hasRole('USER')")
     @PostMapping()
-    public ResponseEntity<?> buyGame(@RequestBody GameNameRequest gameNameRequest,
+    public ResponseEntity<Object> buyGame(@RequestBody GameNameRequest gameNameRequest,
             HttpServletRequest httpServletRequest) {
         String login = authService.getLoginFromToken(httpServletRequest);
         Game game = gameService.getGameByName(gameNameRequest.getGameName());
@@ -83,22 +79,8 @@ public class GameController {
     }
 
     @GetMapping()
-    public ResponseEntity<?> getAllGames(@RequestParam(value = "page", defaultValue = "0") int page,
+    public ResponseEntity<Object> getAllGames(@RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "10") int size) {
         return ResponseEntity.ok(gameService.getAllGames(page, size));
     }
-
-    /*
-     * @PreAuthorize("hasAnyRole('USER','DEV')")
-     * 
-     * @GetMapping()
-     * public ResponseEntity<?> getAllGamesByLogin(@RequestParam(value = "page",
-     * defaultValue = "0") int page,
-     * 
-     * @RequestParam(value = "size", defaultValue = "10") int size,
-     * HttpServletRequest httpServletRequest) {
-     * String login = authService.getLoginFromToken(httpServletRequest);
-     * return ResponseEntity.ok(libraryService.getUserGames(login, page, size));
-     * }
-     */
 }

@@ -1,5 +1,6 @@
 package com.par.parapp.service;
 
+import com.par.parapp.dto.GamePictures;
 import com.par.parapp.dto.UploadGameRequest;
 import com.par.parapp.model.Game;
 import org.springframework.stereotype.Service;
@@ -22,10 +23,16 @@ public class DevService {
     public void uploadGame(UploadGameRequest uploadGameRequest) {
         Game game = gameService.saveGame(uploadGameRequest.getName(), uploadGameRequest.getGenres(),
                 uploadGameRequest.getDevLogin(), uploadGameRequest.getGameUrl());
-        shopService.saveShop(game, uploadGameRequest.getPrice(), uploadGameRequest.getDescription(),
-                uploadGameRequest.getPictureCover(), uploadGameRequest.getPictureShop(),
+
+        var pictures = new GamePictures(
+                uploadGameRequest.getPictureShop(),
+                uploadGameRequest.getPictureCover(),
                 uploadGameRequest.getPictureGameplay1(),
-                uploadGameRequest.getPictureGameplay2(), uploadGameRequest.getPictureGameplay3());
+                uploadGameRequest.getPictureGameplay2(),
+                uploadGameRequest.getPictureGameplay3());
+
+        shopService.saveShop(game, uploadGameRequest.getPrice(), uploadGameRequest.getDescription(),
+                pictures);
 
         if (!uploadGameRequest.getCommonItemName().isEmpty() && !uploadGameRequest.getCommonItemUrl().isEmpty())
             itemService.saveItem(game, uploadGameRequest.getCommonItemName(),

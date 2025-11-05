@@ -11,7 +11,6 @@ import com.par.parapp.exception.ResourceNotFoundException;
 import com.par.parapp.model.Item;
 import com.par.parapp.model.Market;
 import com.par.parapp.model.User;
-import com.par.parapp.repository.InventoryRepository;
 import com.par.parapp.repository.MarketRepository;
 
 @Service
@@ -51,13 +50,11 @@ public class MarketService {
                             market.getPrice(), market.getId()));
             });
         } else
-            marketList.forEach(market -> {
-                slotsResponses.add(new SlotsResponse(market.getItem().getName(),
-                        market.getItem().getItemUrl(),
-                        market.getItem().getGame().getName(),
-                        market.getItem().getRarity(),
-                        market.getPrice(), market.getId()));
-            });
+            marketList.forEach(market -> slotsResponses.add(new SlotsResponse(market.getItem().getName(),
+                    market.getItem().getItemUrl(),
+                    market.getItem().getGame().getName(),
+                    market.getItem().getRarity(),
+                    market.getPrice(), market.getId())));
 
         slotsResponses.sort(Comparator.comparing(SlotsResponse::getPrice));
 

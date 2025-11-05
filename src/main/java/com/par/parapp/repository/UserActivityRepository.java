@@ -13,5 +13,5 @@ import java.util.Optional;
 public interface UserActivityRepository extends JpaRepository<UserActivity, Long> {
 
     @Query(value = "SELECT * FROM user_activity WHERE user_activity.user_login=:userLogin", nativeQuery = true)
-    Optional<Page<UserActivity>> getAllByUserLogin(@Param("userLogin") String user_login, Pageable pageable);
+    Optional<Page<UserActivity>> getAllByUserLogin(@Param("userLogin") String userLogin, Pageable pageable);
 }

@@ -35,7 +35,7 @@ public class GuideController {
     }
 
     @GetMapping()
-    public ResponseEntity<?> getGamesBySelectedGame(@RequestParam(defaultValue = "0") int page,
+    public ResponseEntity<Object> getGamesBySelectedGame(@RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam String selectedGame) {
 
@@ -44,7 +44,7 @@ public class GuideController {
 
     @PostMapping()
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<?> addGuide(@Valid @RequestBody GuideRequest guideRequest,
+    public ResponseEntity<Object> addGuide(@Valid @RequestBody GuideRequest guideRequest,
             HttpServletRequest httpServletRequest) {
         String login = authService.getLoginFromToken(httpServletRequest);
         User user = userService.getUserByLogin(login);

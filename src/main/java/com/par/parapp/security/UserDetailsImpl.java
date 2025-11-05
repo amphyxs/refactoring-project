@@ -1,17 +1,16 @@
 package com.par.parapp.security;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.time.LocalDate;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
-import com.par.parapp.model.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.time.LocalDate;
-import java.time.OffsetDateTime;
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.par.parapp.model.User;
 
 public class UserDetailsImpl implements UserDetails {
 
@@ -33,20 +32,90 @@ public class UserDetailsImpl implements UserDetails {
 
     private Boolean isTutorialCompleted;
 
-    public UserDetailsImpl(String login, String password, String status,
-            String email,
-            LocalDate lastLoginDate,
-            LocalDate registrationDate,
-            Collection<? extends GrantedAuthority> authorities,
-            Boolean isTutorialCompleted) {
-        this.login = login;
-        this.password = password;
-        this.status = status;
-        this.email = email;
-        this.lastLoginDate = lastLoginDate;
-        this.registrationDate = registrationDate;
-        this.authorities = authorities;
-        this.isTutorialCompleted = isTutorialCompleted;
+    public static class UserDetailsParams {
+        private String login;
+        private String password;
+        private String status;
+        private String email;
+        private LocalDate lastLoginDate;
+        private LocalDate registrationDate;
+        private Collection<? extends GrantedAuthority> authorities;
+        private Boolean isTutorialCompleted;
+
+        public void setLogin(String login) {
+            this.login = login;
+        }
+
+        public void setPassword(String password) {
+            this.password = password;
+        }
+
+        public void setStatus(String status) {
+            this.status = status;
+        }
+
+        public void setEmail(String email) {
+            this.email = email;
+        }
+
+        public void setLastLoginDate(LocalDate lastLoginDate) {
+            this.lastLoginDate = lastLoginDate;
+        }
+
+        public void setRegistrationDate(LocalDate registrationDate) {
+            this.registrationDate = registrationDate;
+        }
+
+        public void setAuthorities(Collection<? extends GrantedAuthority> authorities) {
+            this.authorities = authorities;
+        }
+
+        public void setIsTutorialCompleted(Boolean isTutorialCompleted) {
+            this.isTutorialCompleted = isTutorialCompleted;
+        }
+
+        public String getLogin() {
+            return login;
+        }
+
+        public String getPassword() {
+            return password;
+        }
+
+        public String getStatus() {
+            return status;
+        }
+
+        public String getEmail() {
+            return email;
+        }
+
+        public LocalDate getLastLoginDate() {
+            return lastLoginDate;
+        }
+
+        public LocalDate getRegistrationDate() {
+            return registrationDate;
+        }
+
+        public Collection<GrantedAuthority> getAuthorities() {
+            return (Collection<GrantedAuthority>) authorities;
+        }
+
+        public Boolean getIsTutorialCompleted() {
+            return isTutorialCompleted;
+        }
+    }
+
+    public UserDetailsImpl(UserDetailsParams params) {
+        this.login = params.getLogin();
+        this.password = params.getPassword();
+        this.status = params.getStatus();
+        this.email = params.getEmail();
+        this.lastLoginDate = params.getLastLoginDate();
+        this.registrationDate = params.getRegistrationDate();
+        this.authorities = params.getAuthorities();
+        this.isTutorialCompleted = params.getIsTutorialCompleted();
     }
 
     public static UserDetailsImpl build(User user) {
@@ -55,15 +124,16 @@ public class UserDetailsImpl implements UserDetails {
                 .map(roles -> new SimpleGrantedAuthority(roles.getName().name()))
                 .collect(Collectors.toList());
 
-        return new UserDetailsImpl(
-                user.getLogin(),
-                user.getPassword(),
-                user.getStatus(),
-                user.getEmail(),
-                user.getLastLoginDate(),
-                user.getRegistrationDate(),
-                authorities,
-                user.getIsTutorialCompleted());
+        UserDetailsParams params = new UserDetailsParams();
+        params.setLogin(user.getLogin());
+        params.setPassword(user.getPassword());
+        params.setStatus(user.getStatus());
+        params.setEmail(user.getEmail());
+        params.setLastLoginDate(user.getLastLoginDate());
+        params.setRegistrationDate(user.getRegistrationDate());
+        params.setAuthorities(authorities);
+        params.setIsTutorialCompleted(user.getIsTutorialCompleted());
+        return new UserDetailsImpl(params);
     }
 
     @Override

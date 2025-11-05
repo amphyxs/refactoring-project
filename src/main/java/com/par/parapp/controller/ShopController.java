@@ -17,7 +17,7 @@ public class ShopController {
     }
 
     @GetMapping()
-    public ResponseEntity<?> getGamesByNameAndGenres(@RequestParam String gameName,
+    public ResponseEntity<Object> getGamesByNameAndGenres(@RequestParam String gameName,
             @RequestParam List<String> genres) {
         return ResponseEntity.ok(shopService.getEntriesByGameNameAndGenres(gameName,
                 genres));

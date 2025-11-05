@@ -149,7 +149,7 @@ class GameControllerIntegrationTest {
         shop.setPrice(testGamePrice);
         shop.setDescription("Test game description");
         shop.setPictureCover("https://example.com/cover.jpg");
-        shop.setPicture_shop("https://example.com/shop.jpg");
+        shop.setPictureShop("https://example.com/shop.jpg");
         shop.setPictureGamePlay1("https://example.com/gameplay1.jpg");
         shop.setPictureGamePlay2("https://example.com/gameplay2.jpg");
         shop.setPictureGamePlay3("https://example.com/gameplay3.jpg");

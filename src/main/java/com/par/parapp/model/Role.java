@@ -14,6 +14,7 @@ public class Role {
     private ERole name;
 
     public Role() {
+        super();
     }
 
     public Role(ERole name) {

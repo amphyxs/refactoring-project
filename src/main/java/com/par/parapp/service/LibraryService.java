@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import com.par.parapp.dto.LastGamesResponse;
 import com.par.parapp.dto.LibraryDataResponse;
+import com.par.parapp.exception.BonusesForRefundWereSpentException;
 import com.par.parapp.exception.ResourceNotFoundException;
 import com.par.parapp.model.Game;
 import com.par.parapp.model.Library;
@@ -42,6 +43,8 @@ public class LibraryService {
     private final UserRepository userRepository;
 
     private final WalletRepository walletRepository;
+
+    private static final String SUCCESS_TRANSACTION_STATUS = "success";
 
     public LibraryService(LibraryRepository libraryRepository, ShopRepository shopRepository,
             GameRepository gameRepository, TransactionRepository transactionRepository, UserRepository userRepository,
@@ -72,18 +75,18 @@ public class LibraryService {
 
         allLibraryEntries.forEach(library -> {
 
-            String game_name_to_send = library.getGame().getName();
-            String game_picture_to_send = libraryRepository.getGameShopPictureByGameName(library.getGame().getName());
-            String last_run_date_to_send;
+            String gameNameToSend = library.getGame().getName();
+            String gamePictureToSend = libraryRepository.getGameShopPictureByGameName(library.getGame().getName());
+            String lastRunDateToSend;
             if (library.getLastRunDate() == null)
-                last_run_date_to_send = "";
+                lastRunDateToSend = "";
             else
-                last_run_date_to_send = library.getLastRunDate().toString().substring(0,
+                lastRunDateToSend = library.getLastRunDate().toString().substring(0,
                         library.getLastRunDate().toString().indexOf('.'));
 
-            libraryDataResponses.add(new LibraryDataResponse(game_name_to_send,
-                    game_picture_to_send,
-                    last_run_date_to_send, library.getGame().getGameUrl()));
+            libraryDataResponses.add(new LibraryDataResponse(gameNameToSend,
+                    gamePictureToSend,
+                    lastRunDateToSend, library.getGame().getGameUrl()));
 
         });
 
@@ -123,23 +126,27 @@ public class LibraryService {
                 .orElseThrow(ResourceNotFoundException::new);
         List<Game> userGames = new ArrayList<>();
         libraryList = libraryData.getContent();
-        libraryList.forEach(library -> {
-            userGames.add(library.getGame());
-        });
+        libraryList.forEach(library -> userGames.add(library.getGame()));
         return userGames;
     }
 
     public void refundGame(String buyerLogin, String gameName) {
-        var gameId = gameRepository.getGameByName(gameName).get().getId();
-        var gameTransaction = transactionRepository.getSuccessTransactionForBuyingGameOfUser(buyerLogin, gameId).get();
+        var gameId = gameRepository.getGameByName(gameName)
+                .orElseThrow(() -> new ResourceNotFoundException("Game not found"))
+                .getId();
+        var gameTransaction = transactionRepository.getSuccessTransactionForBuyingGameOfUser(buyerLogin, gameId)
+                .orElseThrow(() -> new ResourceNotFoundException("Game transaction not found"));
         var bonusesTransaction = transactionRepository
-                .getSuccessTransactionForBuyingGameWithBonusesOfUser(buyerLogin, gameId).get();
-        var libraryItem = libraryRepository.getAllFromLibraryByGameNameFilter(gameName, buyerLogin).get().get(0);
+                .getSuccessTransactionForBuyingGameWithBonusesOfUser(buyerLogin, gameId)
+                .orElseThrow(() -> new ResourceNotFoundException("Bonuses transaction not found"));
+        var libraryItem = libraryRepository.getAllFromLibraryByGameNameFilter(gameName, buyerLogin)
+                .orElseThrow(() -> new ResourceNotFoundException("Library item not found"))
+                .get(0);
         var user = userRepository.getReferenceById(buyerLogin);
 
         if (bonusesTransaction.getAmount() > 0) {
             if (user.getWallet().getBonuses() < bonusesTransaction.getAmount()) {
-                throw new RuntimeException("User has spent bonuses those must be taken back");
+                throw new BonusesForRefundWereSpentException();
             }
 
             user.getWallet().setBonuses(user.getWallet().getBonuses() - bonusesTransaction.getAmount());
@@ -156,31 +163,53 @@ public class LibraryService {
 
     @Transactional
     public void transferMoneyAndBonuses(User buyer, Game game, Boolean isPayingWithBonuses) {
-        Shop shopItem = shopRepository.getShopByGameName(game.getName()).get();
+        Shop shopItem = shopRepository.getShopByGameName(game.getName())
+                .orElseThrow(() -> new ResourceNotFoundException("Shop item not found"));
 
         Double bonusesToUse;
         Double bonusesToAdd;
         if (Boolean.TRUE.equals(isPayingWithBonuses)) {
             bonusesToUse = Math.min(userRepository.getBonuses(buyer.getLogin()), shopItem.getPrice());
             bonusesToAdd = 0.0d;
-            transactionRepository
-                    .save(new Transaction(buyer, "bonuses", -bonusesToUse, new Timestamp(System.currentTimeMillis()),
-                            "success", null, game, null));
+            Transaction.TransactionParams params1 = new Transaction.TransactionParams();
+            params1.setUser(buyer);
+            params1.setPaymentMethod("bonuses");
+            params1.setAmount(-bonusesToUse);
+            params1.setTransactionDate(new Timestamp(System.currentTimeMillis()));
+            params1.setTransactionStatus(SUCCESS_TRANSACTION_STATUS);
+            params1.setItem(null);
+            params1.setGame(game);
+            params1.setWallet(null);
+            transactionRepository.save(new Transaction(params1));
         } else {
             bonusesToUse = 0.0d;
             bonusesToAdd = shopItem.getPrice() * 0.05d;
-            transactionRepository
-                    .save(new Transaction(buyer, "bonuses", bonusesToAdd, new Timestamp(System.currentTimeMillis()),
-                            "success", null, game, null));
+            Transaction.TransactionParams params2 = new Transaction.TransactionParams();
+            params2.setUser(buyer);
+            params2.setPaymentMethod("bonuses");
+            params2.setAmount(bonusesToAdd);
+            params2.setTransactionDate(new Timestamp(System.currentTimeMillis()));
+            params2.setTransactionStatus(SUCCESS_TRANSACTION_STATUS);
+            params2.setItem(null);
+            params2.setGame(game);
+            params2.setWallet(null);
+            transactionRepository.save(new Transaction(params2));
         }
 
         Double initialBalance = buyer.getWallet().getBalance();
         Double initialBonuses = buyer.getWallet().getBonuses();
         buyer.getWallet().setBonuses(initialBonuses - bonusesToUse);
         buyer.getWallet().setBalance(initialBalance + bonusesToUse - shopItem.getPrice());
-        transactionRepository
-                .save(new Transaction(buyer, "balance", shopItem.getPrice(), new Timestamp(System.currentTimeMillis()),
-                        "success", null, game, null));
+        Transaction.TransactionParams params3 = new Transaction.TransactionParams();
+        params3.setUser(buyer);
+        params3.setPaymentMethod("balance");
+        params3.setAmount(shopItem.getPrice());
+        params3.setTransactionDate(new Timestamp(System.currentTimeMillis()));
+        params3.setTransactionStatus(SUCCESS_TRANSACTION_STATUS);
+        params3.setItem(null);
+        params3.setGame(game);
+        params3.setWallet(null);
+        transactionRepository.save(new Transaction(params3));
         buyer.getWallet().setBonuses(buyer.getWallet().getBonuses() + bonusesToAdd);
 
         walletRepository.save(buyer.getWallet());
