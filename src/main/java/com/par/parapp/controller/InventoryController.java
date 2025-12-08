@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/inventory")
-@CrossOrigin(origins = "*", maxAge = 3600)
 public class InventoryController {
 
     private final InventoryService inventoryService;

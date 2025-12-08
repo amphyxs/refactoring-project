@@ -39,3 +39,10 @@ server:
 
 app:
   jwtExpirationMs: 86400000
+  cors:
+    allowed-origins: http://localhost:3000,http://localhost:4200,http://localhost:8080
+    allowed-methods: GET,POST,PUT,PATCH,DELETE,OPTIONS
+    allowed-headers: "*"
+    exposed-headers: Authorization,Content-Type
+    allow-credentials: true
+    max-age: 3600
