@@ -3,18 +3,23 @@ package com.par.parapp.service;
 import com.par.parapp.dto.UserDataResponse;
 import com.par.parapp.exception.NotEnoughBalanceException;
 import com.par.parapp.model.User;
+import com.par.parapp.repository.TransactionRepository;
 import com.par.parapp.repository.UserRepository;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.time.LocalDate;
 
 @Service
 public class UserService {
 
     private final UserRepository userRepository;
+    private final TransactionRepository transactionRepository;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, TransactionRepository transactionRepository) {
         this.userRepository = userRepository;
+        this.transactionRepository = transactionRepository;
     }
 
     public boolean checkUserOnExist(String login) {
@@ -70,8 +75,10 @@ public class UserService {
         userRepository.replenishBalanceSeller(userLogin, balance);
     }
 
-    public void chargeBalanceCustomer(String userLogin, Double balance, Long id) {
-        userRepository.chargeBalanceCustomer(userLogin, balance, id);
+    @Transactional
+    public void chargeBalanceCustomer(String userLogin, Double balance, Long itemId) {
+        userRepository.chargeBalanceCustomer(userLogin, balance);
+        transactionRepository.createTransactionForItemPurchase(userLogin, balance, itemId);
     }
 
     public void checkBalanceToBuyGame(User user, double marketPrice) {
