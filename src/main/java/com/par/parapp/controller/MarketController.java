@@ -31,7 +31,6 @@ import com.par.parapp.service.UserService;
 @Validated
 @RestController
 @RequestMapping("/market")
-@CrossOrigin(origins = "*", maxAge = 3600)
 public class MarketController {
 
     private final UserService userService;

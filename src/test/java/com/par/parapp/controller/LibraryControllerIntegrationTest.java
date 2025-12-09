@@ -42,6 +42,7 @@ class LibraryControllerIntegrationTest {
         // Register developer and upload game
         SignUpRequest devSignUp = new SignUpRequest(devLogin, "devpass123", "libdev@example.com", true);
         mockMvc.perform(post("/auth/sign-up")
+                .header("Origin", "http://localhost:3000")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(devSignUp)));
 
@@ -50,6 +51,7 @@ class LibraryControllerIntegrationTest {
         devSignIn.setPassword("devpass123");
         
         MvcResult devResult = mockMvc.perform(post("/auth/sign-in")
+                .header("Origin", "http://localhost:3000")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(devSignIn)))
                 .andReturn();
@@ -70,12 +72,14 @@ class LibraryControllerIntegrationTest {
         uploadRequest.setGenres(new HashSet<>(Arrays.asList("RPG")));
 
         mockMvc.perform(post("/dev")
+                .header("Origin", "http://localhost:3000")
                 .header("Authorization", "Bearer " + devJwtToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(uploadRequest)));
 
         SignUpRequest userSignUp = new SignUpRequest(userLogin, "userpass123", "libuser@example.com", false);
         mockMvc.perform(post("/auth/sign-up")
+                .header("Origin", "http://localhost:3000")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(userSignUp)));
 
@@ -84,6 +88,7 @@ class LibraryControllerIntegrationTest {
         userSignIn.setPassword("userpass123");
         
         MvcResult userResult = mockMvc.perform(post("/auth/sign-in")
+                .header("Origin", "http://localhost:3000")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(userSignIn)))
                 .andReturn();
@@ -93,12 +98,14 @@ class LibraryControllerIntegrationTest {
         BalanceRequest balanceRequest = new BalanceRequest();
         balanceRequest.setBalance(100.0);
         mockMvc.perform(post("/user/balance-add")
+                .header("Origin", "http://localhost:3000")
                 .header("Authorization", "Bearer " + userJwtToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(balanceRequest)));
 
         GameNameRequest gameRequest = new GameNameRequest(testGameName, false);
         mockMvc.perform(post("/game")
+                .header("Origin", "http://localhost:3000")
                 .header("Authorization", "Bearer " + userJwtToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(gameRequest)));
@@ -107,6 +114,7 @@ class LibraryControllerIntegrationTest {
     @Test
     void testGetGamesByName() throws Exception {
         mockMvc.perform(get("/library")
+                .header("Origin", "http://localhost:3000")
                 .header("Authorization", "Bearer " + userJwtToken)
                 .param("gameName", testGameName))
                 .andExpect(status().isOk());
@@ -115,20 +123,23 @@ class LibraryControllerIntegrationTest {
     @Test
     void testEnterGame() throws Exception {
         mockMvc.perform(patch("/library/" + testGameName)
+                .header("Origin", "http://localhost:3000")
                 .header("Authorization", "Bearer " + userJwtToken))
                 .andExpect(status().isNoContent());
     }
 
     @Test
     void testGetGamesCount() throws Exception {
-        mockMvc.perform(get("/library/count/" + userLogin))
+        mockMvc.perform(get("/library/count/" + userLogin)
+                .header("Origin", "http://localhost:3000"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isNumber());
     }
 
     @Test
     void testGetLastGames() throws Exception {
-        mockMvc.perform(get("/library/last-games/" + userLogin))
+        mockMvc.perform(get("/library/last-games/" + userLogin)
+                .header("Origin", "http://localhost:3000"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray());
     }
@@ -153,6 +164,7 @@ class LibraryControllerIntegrationTest {
         uploadRequest.setGenres(new HashSet<>(Arrays.asList("Action")));
 
         mockMvc.perform(post("/dev")
+                .header("Origin", "http://localhost:3000")
                 .header("Authorization", "Bearer " + devJwtToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(uploadRequest)));
@@ -160,12 +172,14 @@ class LibraryControllerIntegrationTest {
         // Purchase the game
         GameNameRequest gameRequest = new GameNameRequest(refundGameName, false);
         mockMvc.perform(post("/game")
+                .header("Origin", "http://localhost:3000")
                 .header("Authorization", "Bearer " + userJwtToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(gameRequest)));
 
         // Now refund it
         mockMvc.perform(post("/library/refund")
+                .header("Origin", "http://localhost:3000")
                 .header("Authorization", "Bearer " + userJwtToken)
                 .param("gameName", refundGameName))
                 .andExpect(status().isOk());
@@ -173,7 +187,8 @@ class LibraryControllerIntegrationTest {
 
     @Test
     void testEnterGameWithoutAuthentication() throws Exception {
-        mockMvc.perform(patch("/library/" + testGameName))
+        mockMvc.perform(patch("/library/" + testGameName)
+                .header("Origin", "http://localhost:3000"))
                 .andExpect(status().is5xxServerError()); 
     }
 }

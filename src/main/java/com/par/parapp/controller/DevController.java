@@ -14,7 +14,6 @@ import javax.validation.Valid;
 @Validated
 @RestController
 @RequestMapping("/dev")
-@CrossOrigin(origins = "*", maxAge = 3600)
 public class DevController {
     private final DevService devService;
 

@@ -16,7 +16,6 @@ import javax.validation.Valid;
 @Validated
 @RestController
 @RequestMapping("/guide")
-@CrossOrigin(origins = "*", maxAge = 3600)
 public class GuideController {
 
     private final GameService gameService;

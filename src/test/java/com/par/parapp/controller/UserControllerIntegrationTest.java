@@ -42,6 +42,7 @@ class UserControllerIntegrationTest {
         );
 
         mockMvc.perform(post("/auth/sign-up")
+                .header("Origin", "http://localhost:3000")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(signUpRequest)));
 
@@ -50,6 +51,7 @@ class UserControllerIntegrationTest {
         signInRequest.setPassword(testUserPassword);
 
         MvcResult result = mockMvc.perform(post("/auth/sign-in")
+                .header("Origin", "http://localhost:3000")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(signInRequest)))
                 .andExpect(status().isOk())
@@ -62,6 +64,7 @@ class UserControllerIntegrationTest {
     @Test
     void testGetUserLogin() throws Exception {
         mockMvc.perform(get("/user")
+                .header("Origin", "http://localhost:3000")
                 .header("Authorization", "Bearer " + jwtToken))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").value(testUserLogin));
@@ -69,13 +72,15 @@ class UserControllerIntegrationTest {
 
     @Test
     void testCheckUserExists() throws Exception {
-        mockMvc.perform(get("/user/exist/" + testUserLogin))
+        mockMvc.perform(get("/user/exist/" + testUserLogin)
+                .header("Origin", "http://localhost:3000"))
                 .andExpect(status().isNoContent());
     }
 
     @Test
     void testCheckUserNotExists() throws Exception {
-        mockMvc.perform(get("/user/exist/nonexistentuser"))
+        mockMvc.perform(get("/user/exist/nonexistentuser12345")
+                .header("Origin", "http://localhost:3000"))
                 .andExpect(status().isBadRequest());
     }
 

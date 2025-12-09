@@ -20,29 +20,28 @@ public interface UserRepository extends JpaRepository<User, String> {
 
         @Transactional
         @Modifying
-        @Query(value = "CALL user_login_update(:arg_login, 'active');", nativeQuery = true)
+        @Query(value = "UPDATE users SET status = 'active', last_login_date = CURRENT_DATE WHERE login = :arg_login", nativeQuery = true)
         void loginAsUser(@Param("arg_login") String login);
 
         @Transactional
         @Modifying
-        @Query(value = "CALL user_login_update(:arg_login, 'inactive');", nativeQuery = true)
+        @Query(value = "UPDATE users SET status = 'inactive', last_login_date = CURRENT_DATE WHERE login = :arg_login", nativeQuery = true)
         void logoutFromUser(@Param("arg_login") String login);
 
         @Transactional
         @Modifying
-        @Query(value = "CALL add_wallet_balance(:arg_login, :arg_balance);", nativeQuery = true)
+        @Query(value = "UPDATE wallets SET balance = balance + :arg_balance WHERE id = (SELECT wallet_id FROM users WHERE login = :arg_login)", nativeQuery = true)
         void replenishBalance(@Param("arg_login") String login, @Param("arg_balance") Double balance);
 
         @Transactional
         @Modifying
-        @Query(value = "CALL add_wallet_balance(:arg_login, :arg_balance);", nativeQuery = true)
+        @Query(value = "UPDATE wallets SET balance = balance + :arg_balance WHERE id = (SELECT wallet_id FROM users WHERE login = :arg_login)", nativeQuery = true)
         void replenishBalanceSeller(@Param("arg_login") String login, @Param("arg_balance") Double balance);
 
         @Transactional
         @Modifying
-        @Query(value = "CALL chargebalanceForSoldItem(:arg_login, :arg_balance, :arg_item_id);", nativeQuery = true)
-        void chargeBalanceCustomer(@Param("arg_login") String login, @Param("arg_balance") Double balance,
-                        @Param("arg_item_id") Long itemId);
+        @Query(value = "UPDATE wallets SET balance = balance - :arg_balance WHERE id = (SELECT wallet_id FROM users WHERE login = :arg_login)", nativeQuery = true)
+        void chargeBalanceCustomer(@Param("arg_login") String login, @Param("arg_balance") Double balance);
 
         @Query(value = "SELECT balance FROM Wallets WHERE id = (SELECT wallet_id FROM Users WHERE login = :arg_login);", nativeQuery = true)
         Double getBalance(@Param("arg_login") String login);

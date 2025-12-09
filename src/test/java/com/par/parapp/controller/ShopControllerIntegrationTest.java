@@ -37,6 +37,7 @@ class ShopControllerIntegrationTest {
         // Register developer
         SignUpRequest devSignUp = new SignUpRequest(devLogin, "devpass123", "shopdev@example.com", true);
         mockMvc.perform(post("/auth/sign-up")
+                .header("Origin", "http://localhost:3000")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(devSignUp)));
 
@@ -45,6 +46,7 @@ class ShopControllerIntegrationTest {
         devSignIn.setPassword("devpass123");
         
         MvcResult devResult = mockMvc.perform(post("/auth/sign-in")
+                .header("Origin", "http://localhost:3000")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(devSignIn)))
                 .andReturn();
@@ -66,6 +68,7 @@ class ShopControllerIntegrationTest {
         uploadRequest.setGenres(new HashSet<>(Arrays.asList("Adventure", "Puzzle")));
 
         mockMvc.perform(post("/dev")
+                .header("Origin", "http://localhost:3000")
                 .header("Authorization", "Bearer " + devJwtToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(uploadRequest)));
@@ -74,6 +77,7 @@ class ShopControllerIntegrationTest {
     @Test
     void testGetGamesByNameAndGenres() throws Exception {
         mockMvc.perform(get("/shop")
+                .header("Origin", "http://localhost:3000")
                 .param("gameName", testGameName)
                 .param("genres", "Adventure", "Puzzle"))
                 .andExpect(status().isOk())
@@ -83,6 +87,7 @@ class ShopControllerIntegrationTest {
     @Test
     void testGetGamesByNameAndSingleGenre() throws Exception {
         mockMvc.perform(get("/shop")
+                .header("Origin", "http://localhost:3000")
                 .param("gameName", testGameName)
                 .param("genres", "Adventure"))
                 .andExpect(status().isOk())
@@ -92,6 +97,7 @@ class ShopControllerIntegrationTest {
     @Test
     void testGetGamesWithNonExistentGenre() throws Exception {
         mockMvc.perform(get("/shop")
+                .header("Origin", "http://localhost:3000")
                 .param("gameName", testGameName)
                 .param("genres", "Horror"))
                 .andExpect(status().isOk())

@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/library")
-@CrossOrigin(origins = "*", maxAge = 3600)
 public class LibraryController {
 
     private final AuthService authService;

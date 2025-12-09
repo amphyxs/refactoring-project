@@ -8,7 +8,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/shop")
-@CrossOrigin(origins = "*", maxAge = 3600)
 public class ShopController {
     private final ShopService shopService;
 

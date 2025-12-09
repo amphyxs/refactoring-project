@@ -25,7 +25,6 @@ import com.par.parapp.service.UserService;
 
 @RestController
 @RequestMapping("/game")
-@CrossOrigin(origins = "*", maxAge = 3600)
 public class GameController {
 
     private final GameService gameService;

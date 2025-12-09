@@ -17,7 +17,6 @@ import javax.validation.Valid;
 @Validated
 @RestController
 @RequestMapping("/activity")
-@CrossOrigin(origins = "*", maxAge = 3600)
 public class UserActivityController {
 
     private final AuthService authService;

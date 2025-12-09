@@ -41,6 +41,7 @@ class InventoryControllerIntegrationTest {
     void setUp() throws Exception {
         SignUpRequest devSignUp = new SignUpRequest(devLogin, "devpass123", "invdev@example.com", true);
         mockMvc.perform(post("/auth/sign-up")
+                .header("Origin", "http://localhost:3000")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(devSignUp)));
 
@@ -49,6 +50,7 @@ class InventoryControllerIntegrationTest {
         devSignIn.setPassword("devpass123");
         
         MvcResult devResult = mockMvc.perform(post("/auth/sign-in")
+                .header("Origin", "http://localhost:3000")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(devSignIn)))
                 .andReturn();
@@ -75,6 +77,7 @@ class InventoryControllerIntegrationTest {
         uploadRequest.setLegendaryItemUrl("https://example.com/amulet.jpg");
 
         mockMvc.perform(post("/dev")
+                .header("Origin", "http://localhost:3000")
                 .header("Authorization", "Bearer " + devJwtToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(uploadRequest)));
@@ -82,6 +85,7 @@ class InventoryControllerIntegrationTest {
         // Register user
         SignUpRequest userSignUp = new SignUpRequest(userLogin, "userpass123", "invuser@example.com", false);
         mockMvc.perform(post("/auth/sign-up")
+                .header("Origin", "http://localhost:3000")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(userSignUp)));
 
@@ -90,6 +94,7 @@ class InventoryControllerIntegrationTest {
         userSignIn.setPassword("userpass123");
         
         MvcResult userResult = mockMvc.perform(post("/auth/sign-in")
+                .header("Origin", "http://localhost:3000")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(userSignIn)))
                 .andReturn();
@@ -100,18 +105,21 @@ class InventoryControllerIntegrationTest {
         balanceRequest.setBalance(100.0);
         
         mockMvc.perform(post("/user/balance-add")
+                .header("Origin", "http://localhost:3000")
                 .header("Authorization", "Bearer " + userJwtToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(balanceRequest)));
 
         GameNameRequest buyRequest = new GameNameRequest(gameName, false);
         mockMvc.perform(post("/game")
+                .header("Origin", "http://localhost:3000")
                 .header("Authorization", "Bearer " + userJwtToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(buyRequest)));
 
         GameNameRequest enterRequest = new GameNameRequest(gameName, false);
         mockMvc.perform(post("/library/enter")
+                .header("Origin", "http://localhost:3000")
                 .header("Authorization", "Bearer " + userJwtToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(enterRequest)));
@@ -120,6 +128,7 @@ class InventoryControllerIntegrationTest {
     @Test
     void testGetAllItemsWithDefaultPagination() throws Exception {
         mockMvc.perform(get("/inventory")
+                .header("Origin", "http://localhost:3000")
                 .header("Authorization", "Bearer " + userJwtToken))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").exists());
@@ -128,6 +137,7 @@ class InventoryControllerIntegrationTest {
     @Test
     void testGetAllItemsWithCustomPagination() throws Exception {
         mockMvc.perform(get("/inventory")
+                .header("Origin", "http://localhost:3000")
                 .header("Authorization", "Bearer " + userJwtToken)
                 .param("page", "0")
                 .param("size", "5"))
@@ -138,6 +148,7 @@ class InventoryControllerIntegrationTest {
     @Test
     void testGetAllItemsPage1() throws Exception {
         mockMvc.perform(get("/inventory")
+                .header("Origin", "http://localhost:3000")
                 .header("Authorization", "Bearer " + userJwtToken)
                 .param("page", "1")
                 .param("size", "10"))
@@ -146,13 +157,15 @@ class InventoryControllerIntegrationTest {
 
     @Test
     void testGetInventoryWithoutAuthentication() throws Exception {
-        mockMvc.perform(get("/inventory"))
+        mockMvc.perform(get("/inventory")
+                .header("Origin", "http://localhost:3000"))
                 .andExpect(status().is5xxServerError());
     }
 
     @Test
     void testGetInventoryWithLargePage() throws Exception {
         mockMvc.perform(get("/inventory")
+                .header("Origin", "http://localhost:3000")
                 .header("Authorization", "Bearer " + userJwtToken)
                 .param("page", "0")
                 .param("size", "100"))

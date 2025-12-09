@@ -42,30 +42,34 @@ class DevControllerIntegrationTest {
 
         SignUpRequest devSignUp = new SignUpRequest(devLogin, "devpass123", devLogin + "@test.com", true);
         mockMvc.perform(post("/auth/sign-up")
+                .header("Origin", "http://localhost:3000")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(devSignUp)));
 
         SignInRequest devSignIn = new SignInRequest();
         devSignIn.setLogin(devLogin);
         devSignIn.setPassword("devpass123");
-        
+
         MvcResult devResult = mockMvc.perform(post("/auth/sign-in")
+                .header("Origin", "http://localhost:3000")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(devSignIn)))
                 .andReturn();
-        
+
         devJwtToken = objectMapper.readTree(devResult.getResponse().getContentAsString()).get("jwt").asText();
 
         SignUpRequest userSignUp = new SignUpRequest(userLogin, "userpass", userLogin + "@test.com", false);
         mockMvc.perform(post("/auth/sign-up")
+                .header("Origin", "http://localhost:3000")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(userSignUp)));
 
         SignInRequest userSignIn = new SignInRequest();
         userSignIn.setLogin(userLogin);
         userSignIn.setPassword("userpass");
-        
+
         MvcResult userResult = mockMvc.perform(post("/auth/sign-in")
+                .header("Origin", "http://localhost:3000")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(userSignIn)))
                 .andReturn();
@@ -89,6 +93,7 @@ class DevControllerIntegrationTest {
         uploadRequest.setGenres(new HashSet<>(Arrays.asList("Strategy")));
 
         MvcResult result = mockMvc.perform(post("/dev")
+                .header("Origin", "http://localhost:3000")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(uploadRequest)))
                 .andReturn();
@@ -116,6 +121,7 @@ class DevControllerIntegrationTest {
         uploadRequest.setGenres(new HashSet<>(Arrays.asList("Simulation")));
 
         MvcResult result = mockMvc.perform(post("/dev")
+                .header("Origin", "http://localhost:3000")
                 .header("Authorization", "Bearer " + userJwtToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(uploadRequest)))
@@ -144,6 +150,7 @@ class DevControllerIntegrationTest {
         uploadRequest.setGenres(new HashSet<>(Arrays.asList("RPG")));
 
         mockMvc.perform(post("/dev")
+                .header("Origin", "http://localhost:3000")
                 .header("Authorization", "Bearer " + devJwtToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(uploadRequest)))
@@ -156,6 +163,7 @@ class DevControllerIntegrationTest {
         uploadRequest.setName("IncompleteGame");
 
         mockMvc.perform(post("/dev")
+                .header("Origin", "http://localhost:3000")
                 .header("Authorization", "Bearer " + devJwtToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(uploadRequest)))
@@ -178,6 +186,7 @@ class DevControllerIntegrationTest {
         uploadRequest.setGenres(new HashSet<>(Arrays.asList("Action")));
 
         mockMvc.perform(post("/dev")
+                .header("Origin", "http://localhost:3000")
                 .header("Authorization", "Bearer " + devJwtToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(uploadRequest)))
