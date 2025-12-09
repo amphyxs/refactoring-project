@@ -9,6 +9,9 @@ spring:
     url: jdbc:postgresql://localhost:5433/mydatabase
     username: postgres
     password: postgres
+    hikari:
+      validation-timeout: 15000
+      connection-timeout: 30000
 
   jpa:
     properties:

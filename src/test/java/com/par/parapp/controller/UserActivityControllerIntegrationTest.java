@@ -33,6 +33,7 @@ class UserActivityControllerIntegrationTest {
     void setUp() throws Exception {
         SignUpRequest userSignUp = new SignUpRequest(userLogin, "userpass123", "actuser@example.com", false);
         mockMvc.perform(post("/auth/sign-up")
+                .header("Origin", "http://localhost:3000")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(userSignUp)));
 
@@ -41,6 +42,7 @@ class UserActivityControllerIntegrationTest {
         userSignIn.setPassword("userpass123");
         
         MvcResult userResult = mockMvc.perform(post("/auth/sign-in")
+                .header("Origin", "http://localhost:3000")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(userSignIn)))
                 .andReturn();
@@ -54,6 +56,7 @@ class UserActivityControllerIntegrationTest {
         activityRequest.setText("Just finished playing an amazing game!");
 
         mockMvc.perform(post("/activity")
+                .header("Origin", "http://localhost:3000")
                 .header("Authorization", "Bearer " + userJwtToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(activityRequest)))
@@ -67,11 +70,13 @@ class UserActivityControllerIntegrationTest {
         activityRequest.setText("New activity post");
 
         mockMvc.perform(post("/activity")
+                .header("Origin", "http://localhost:3000")
                 .header("Authorization", "Bearer " + userJwtToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(activityRequest)));
 
         mockMvc.perform(get("/activity")
+                .header("Origin", "http://localhost:3000")
                 .param("login", userLogin))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").exists());
@@ -80,6 +85,7 @@ class UserActivityControllerIntegrationTest {
     @Test
     void testGetAllActivitiesWithPagination() throws Exception {
         mockMvc.perform(get("/activity")
+                .header("Origin", "http://localhost:3000")
                 .param("login", userLogin)
                 .param("page", "0")
                 .param("size", "5"))
@@ -92,6 +98,7 @@ class UserActivityControllerIntegrationTest {
         activityRequest.setText("Unauthorized activity");
 
         mockMvc.perform(post("/activity")
+                .header("Origin", "http://localhost:3000")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(activityRequest)))
                 .andExpect(status().is5xxServerError());
@@ -103,6 +110,7 @@ class UserActivityControllerIntegrationTest {
         activity1.setText("Started playing a new RPG");
 
         mockMvc.perform(post("/activity")
+                .header("Origin", "http://localhost:3000")
                 .header("Authorization", "Bearer " + userJwtToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(activity1)))
@@ -112,12 +120,14 @@ class UserActivityControllerIntegrationTest {
         activity2.setText("Completed first quest");
 
         mockMvc.perform(post("/activity")
+                .header("Origin", "http://localhost:3000")
                 .header("Authorization", "Bearer " + userJwtToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(activity2)))
                 .andExpect(status().isCreated());
 
         mockMvc.perform(get("/activity")
+                .header("Origin", "http://localhost:3000")
                 .param("login", userLogin))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").exists());
@@ -137,6 +147,7 @@ class UserActivityControllerIntegrationTest {
         activityRequest.setText("This is a very long activity post. ".repeat(50));
 
         mockMvc.perform(post("/activity")
+                .header("Origin", "http://localhost:3000")
                 .header("Authorization", "Bearer " + userJwtToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(activityRequest)))
@@ -146,6 +157,7 @@ class UserActivityControllerIntegrationTest {
     @Test
     void testGetActivitiesWithLargePage() throws Exception {
         mockMvc.perform(get("/activity")
+                .header("Origin", "http://localhost:3000")
                 .param("login", userLogin)
                 .param("page", "10")
                 .param("size", "100"))

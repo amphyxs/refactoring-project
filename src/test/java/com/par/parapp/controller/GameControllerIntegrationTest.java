@@ -117,6 +117,7 @@ class GameControllerIntegrationTest {
         userSignIn.setPassword("userpass123");
         
         String response = mockMvc.perform(post("/auth/sign-in")
+                .header("Origin", "http://localhost:3000")
                 .contentType(MediaType.APPLICATION_JSON)
                 .characterEncoding("UTF-8")
                 .content(objectMapper.writeValueAsString(userSignIn)))
@@ -158,7 +159,8 @@ class GameControllerIntegrationTest {
 
     @Test
     void testGetGameInfo() throws Exception {
-        mockMvc.perform(get("/game/" + testGameName))
+        mockMvc.perform(get("/game/" + testGameName)
+                .header("Origin", "http://localhost:3000"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.gameName").value(testGameName))
                 .andExpect(jsonPath("$.devLogin").value(devLogin));
@@ -166,19 +168,22 @@ class GameControllerIntegrationTest {
 
     @Test
     void testCheckGameExists() throws Exception {
-        mockMvc.perform(get("/game/check/" + testGameName))
+        mockMvc.perform(get("/game/check/" + testGameName)
+                .header("Origin", "http://localhost:3000"))
                 .andExpect(status().isNoContent());
     }
 
     @Test
     void testCheckGameNotExists() throws Exception {
-        mockMvc.perform(get("/game/check/NonExistentGame"))
+        mockMvc.perform(get("/game/check/NonExistentGame")
+                .header("Origin", "http://localhost:3000"))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
     void testGetAllGames() throws Exception {
         mockMvc.perform(get("/game")
+                .header("Origin", "http://localhost:3000")
                 .param("page", "0")
                 .param("size", "10"))
                 .andExpect(status().isOk())
@@ -191,6 +196,7 @@ class GameControllerIntegrationTest {
         balanceRequest.setBalance(100.0);
         
         mockMvc.perform(post("/user/balance-add")
+                .header("Origin", "http://localhost:3000")
                 .header("Authorization", "Bearer " + userJwtToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(balanceRequest)));
@@ -198,6 +204,7 @@ class GameControllerIntegrationTest {
         GameNameRequest gameRequest = new GameNameRequest(testGameName, false);
 
         mockMvc.perform(post("/game")
+                .header("Origin", "http://localhost:3000")
                 .header("Authorization", "Bearer " + userJwtToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(gameRequest)))
@@ -209,6 +216,7 @@ class GameControllerIntegrationTest {
         GameNameRequest gameRequest = new GameNameRequest(testGameName, false);
 
         mockMvc.perform(post("/game")
+                .header("Origin", "http://localhost:3000")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(gameRequest)))
                 .andExpect(status().is5xxServerError());
@@ -216,7 +224,8 @@ class GameControllerIntegrationTest {
 
     @Test
     void testGetGameInfoNonExistent() throws Exception {
-        mockMvc.perform(get("/game/NonExistentGame"))
+        mockMvc.perform(get("/game/NonExistentGame")
+                .header("Origin", "http://localhost:3000"))
                 .andExpect(status().is5xxServerError());
     }
 }

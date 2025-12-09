@@ -37,6 +37,7 @@ class MarketControllerIntegrationTest {
         sellRequest.setPrice(15.0);
 
         mockMvc.perform(post("/market/sell")
+                .header("Origin", "http://localhost:3000")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(sellRequest)))
                 .andExpect(status().is5xxServerError());
@@ -51,6 +52,7 @@ class MarketControllerIntegrationTest {
         buyRequest.setMarketId(1L);
 
         mockMvc.perform(post("/market/buy")
+                .header("Origin", "http://localhost:3000")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(buyRequest)))
                 .andExpect(status().is5xxServerError());

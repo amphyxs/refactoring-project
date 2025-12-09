@@ -13,20 +13,29 @@ import java.time.Duration;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public abstract class AbstractPostgresTestContainer {
 
-    @Container
-    static PostgreSQLContainer<?> postgresContainer = new PostgreSQLContainer<>("postgres:15-alpine")
-            .withDatabaseName("testdb")
-            .withUsername("testuser")
-            .withPassword("testpass")
-            .withReuse(true)
-            .withStartupTimeout(Duration.ofMinutes(5))
-            .withStartupAttempts(3);
+    private static final PostgreSQLContainer<?> POSTGRES_CONTAINER;
+
+    static {
+        System.setProperty("testcontainers.ryuk.disabled", "true");
+
+        POSTGRES_CONTAINER = new PostgreSQLContainer<>("postgres:15-alpine")
+                .withDatabaseName("testdb")
+                .withUsername("testuser")
+                .withPassword("testpass")
+                .withReuse(true);
+
+        // ВАЖНО: запусти контейнер ЗДЕСЬ в static блоке
+        POSTGRES_CONTAINER.start();
+    }
 
     @DynamicPropertySource
     static void registerPgProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.datasource.url", postgresContainer::getJdbcUrl);
-        registry.add("spring.datasource.username", postgresContainer::getUsername);
-        registry.add("spring.datasource.password", postgresContainer::getPassword);
+        // Теперь контейнер уже запущен, можно получать порт
+        registry.add("spring.datasource.url", POSTGRES_CONTAINER::getJdbcUrl);
+        registry.add("spring.datasource.username", POSTGRES_CONTAINER::getUsername);
+        registry.add("spring.datasource.password", POSTGRES_CONTAINER::getPassword);
+        registry.add("spring.datasource.driver-class-name", () -> "org.postgresql.Driver");
         registry.add("spring.jpa.hibernate.ddl-auto", () -> "create-drop");
+        registry.add("spring.jpa.database-platform", () -> "org.hibernate.dialect.PostgreSQLDialect");
     }
 }

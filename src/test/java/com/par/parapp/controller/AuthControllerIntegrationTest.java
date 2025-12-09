@@ -36,6 +36,7 @@ class AuthControllerIntegrationTest {
         );
 
         mockMvc.perform(post("/auth/sign-up")
+                .header("Origin", "http://localhost:3000")
                 .contentType(MediaType.APPLICATION_JSON)
                 .characterEncoding("UTF-8")
                 .content(objectMapper.writeValueAsString(signUpRequest)))
@@ -43,10 +44,11 @@ class AuthControllerIntegrationTest {
                 .andExpect(jsonPath("$.message").exists());
 
         SignInRequest signInRequest = new SignInRequest();
-        signInRequest.setLogin("testuser"); 
-        signInRequest.setPassword("testpass123"); 
+        signInRequest.setLogin("testuser");
+        signInRequest.setPassword("testpass123");
 
         mockMvc.perform(post("/auth/sign-in")
+                .header("Origin", "http://localhost:3000")
                 .contentType(MediaType.APPLICATION_JSON)
                 .characterEncoding("UTF-8")
                 .content(objectMapper.writeValueAsString(signInRequest)))

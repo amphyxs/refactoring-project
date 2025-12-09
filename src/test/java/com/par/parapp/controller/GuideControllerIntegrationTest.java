@@ -41,6 +41,7 @@ class GuideControllerIntegrationTest {
     void setUp() throws Exception {
         SignUpRequest devSignUp = new SignUpRequest(devLogin, "devpass123", "guidedev@example.com", true);
         mockMvc.perform(post("/auth/sign-up")
+                .header("Origin", "http://localhost:3000")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(devSignUp)));
 
@@ -49,6 +50,7 @@ class GuideControllerIntegrationTest {
         devSignIn.setPassword("devpass123");
         
         MvcResult devResult = mockMvc.perform(post("/auth/sign-in")
+                .header("Origin", "http://localhost:3000")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(devSignIn)))
                 .andReturn();
@@ -69,12 +71,14 @@ class GuideControllerIntegrationTest {
         uploadRequest.setGenres(new HashSet<>(Arrays.asList("Strategy")));
 
         mockMvc.perform(post("/dev")
+                .header("Origin", "http://localhost:3000")
                 .header("Authorization", "Bearer " + devJwtToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(uploadRequest)));
 
         SignUpRequest userSignUp = new SignUpRequest(userLogin, "userpass123", "guideuser@example.com", false);
         mockMvc.perform(post("/auth/sign-up")
+                .header("Origin", "http://localhost:3000")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(userSignUp)));
 
@@ -83,6 +87,7 @@ class GuideControllerIntegrationTest {
         userSignIn.setPassword("userpass123");
         
         MvcResult userResult = mockMvc.perform(post("/auth/sign-in")
+                .header("Origin", "http://localhost:3000")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(userSignIn)))
                 .andReturn();
@@ -97,6 +102,7 @@ class GuideControllerIntegrationTest {
         guideRequest.setGuideText("This is a comprehensive guide for the game. Follow these steps to win!");
 
         mockMvc.perform(post("/guide")
+                .header("Origin", "http://localhost:3000")
                 .header("Authorization", "Bearer " + userJwtToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(guideRequest)))
@@ -110,11 +116,13 @@ class GuideControllerIntegrationTest {
         guideRequest.setGuideText("Complete beginner guide");
 
         mockMvc.perform(post("/guide")
+                .header("Origin", "http://localhost:3000")
                 .header("Authorization", "Bearer " + userJwtToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(guideRequest)));
 
         mockMvc.perform(get("/guide")
+                .header("Origin", "http://localhost:3000")
                 .param("selectedGame", gameName))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").exists());
@@ -123,6 +131,7 @@ class GuideControllerIntegrationTest {
     @Test
     void testGetGuidesWithPagination() throws Exception {
         mockMvc.perform(get("/guide")
+                .header("Origin", "http://localhost:3000")
                 .param("selectedGame", gameName)
                 .param("page", "0")
                 .param("size", "5"))
@@ -136,6 +145,7 @@ class GuideControllerIntegrationTest {
         guideRequest.setGuideText("Unauthorized guide");
 
         mockMvc.perform(post("/guide")
+                .header("Origin", "http://localhost:3000")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(guideRequest)))
                 .andExpect(status().is5xxServerError()); 
@@ -148,6 +158,7 @@ class GuideControllerIntegrationTest {
         guide1.setGuideText("Beginner's guide");
 
         mockMvc.perform(post("/guide")
+                .header("Origin", "http://localhost:3000")
                 .header("Authorization", "Bearer " + userJwtToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(guide1)))
@@ -158,12 +169,14 @@ class GuideControllerIntegrationTest {
         guide2.setGuideText("Advanced strategies");
 
         mockMvc.perform(post("/guide")
+                .header("Origin", "http://localhost:3000")
                 .header("Authorization", "Bearer " + userJwtToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(guide2)))
                 .andExpect(status().isCreated());
 
         mockMvc.perform(get("/guide")
+                .header("Origin", "http://localhost:3000")
                 .param("selectedGame", gameName))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").exists());
@@ -172,6 +185,7 @@ class GuideControllerIntegrationTest {
     @Test
     void testGetGuidesForNonExistentGame() throws Exception {
         mockMvc.perform(get("/guide")
+                .header("Origin", "http://localhost:3000")
                 .param("selectedGame", "NonExistentGame"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").exists());
@@ -184,6 +198,7 @@ class GuideControllerIntegrationTest {
         guideRequest.setGuideText("This is a very long guide. ".repeat(35));
 
         mockMvc.perform(post("/guide")
+                .header("Origin", "http://localhost:3000")
                 .header("Authorization", "Bearer " + userJwtToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(guideRequest)))
